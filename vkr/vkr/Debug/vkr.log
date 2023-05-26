@@ -1,0 +1,3 @@
+﻿  main.cpp
+C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(13,13): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+  vkr.vcxproj -> C:\Users\TEMYCH\source\repos\vkr\Debug\vkr.exe

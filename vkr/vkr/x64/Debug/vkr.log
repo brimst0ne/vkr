@@ -1,0 +1,12 @@
+﻿  main.cpp
+C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(15,13): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(42,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(60,3): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(88,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(122,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(158,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(191,27): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(206,27): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(270,13): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(304,31): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+  vkr.vcxproj -> C:\Users\TEMYCH\source\repos\vkr\x64\Debug\vkr.exe
