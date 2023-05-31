@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <ctime>
+#include <algorithm>
 #include <iostream>
 #include <queue>
 #include <vector>
@@ -11,7 +12,9 @@ using namespace std;
 typedef vector<int> vi;
 typedef vector<vi> vvi;
 
-vvi generateGraph(int n, int m) {
+//-------------------------------------------------------------------
+
+vvi generateGraph(int n, int m) {    //Ёвристическа€ функци€ генерации случайного графа
   srand(time(NULL));
 
   vvi adjMatrix(n, vi(n, 0));  // создаем пустую матрицу смежности
@@ -36,7 +39,9 @@ vvi generateGraph(int n, int m) {
   return adjMatrix;
 }
 
-vector<vector<int>> removeIsolatedVertices(
+//-------------------------------------------------------------------
+
+vector<vector<int>> removeIsolatedVertices(    //‘ункци€ удалени€ изолированных вершин в графе
     vector<vector<int>> adjacencyMatrix) {
   vector<int> isolatedVertices;
   int n = adjacencyMatrix.size();
@@ -68,7 +73,9 @@ vector<vector<int>> removeIsolatedVertices(
   return adjacencyMatrix;
 }
 
-int countEdges(vvi adjMatrix) { 
+//-------------------------------------------------------------------
+
+int countEdges(vvi adjMatrix) {     //‘ункци€ подсчета количества ребер в графе
   
   int res = 0;
 
@@ -83,7 +90,9 @@ int countEdges(vvi adjMatrix) {
   return res;
 }
 
-vector<int> getVerticesAtDistanceK(vector<vector<int>> adjacencyMatrix,
+//-------------------------------------------------------------------
+
+vector<int> getVerticesAtDistanceK(vector<vector<int>> adjacencyMatrix,    //‘ункци€ дл€ нахождени€ всех вершин на рассто€нии ровно k от данной
                                    int startVertex, int k) {
   int n = adjacencyMatrix.size();
   vector<int> visited(n, 0);
@@ -117,7 +126,9 @@ vector<int> getVerticesAtDistanceK(vector<vector<int>> adjacencyMatrix,
   return verticesAtDistanceK;
 }
 
-vector<int> getVerticesAtDistanceKOrLess(vector<vector<int>> adjacencyMatrix,
+//-------------------------------------------------------------------
+
+vector<int> getVerticesAtDistanceKOrLess(vector<vector<int>> adjacencyMatrix,    //‘ункци€ дл€ нахождени€ k-окрестности вершины 
                                    int startVertex, int k) {
   int n = adjacencyMatrix.size();
   vector<int> visited(n, 0);
@@ -138,7 +149,7 @@ vector<int> getVerticesAtDistanceKOrLess(vector<vector<int>> adjacencyMatrix,
       break;
     }
 
-    if (currentDistance <= k) {
+    if (currentDistance <= k && currentVertex != startVertex) {
       verticesAtDistanceK.push_back(currentVertex);
     }
 
@@ -153,8 +164,10 @@ vector<int> getVerticesAtDistanceKOrLess(vector<vector<int>> adjacencyMatrix,
   return verticesAtDistanceK;
 }
 
-void generateGraphvizFile(vector<vector<int>> adjacencyMatrix,
-                          string graphName) {
+//-------------------------------------------------------------------
+
+void generateGraphvizFile(vector<vector<int>> adjacencyMatrix,    //‘ункци€ дл€ создани€ изображени€ графа при помощи Graphviz
+                          string graphName, vector<int> domSet) {
   int n = adjacencyMatrix.size();
 
   ofstream ofile;
@@ -177,6 +190,10 @@ void generateGraphvizFile(vector<vector<int>> adjacencyMatrix,
     }
   }
 
+  for (int vertex : domSet) {
+    ofile << "    " << vertex << " [style=filled, fillcolor=red];" << std::endl;
+  }
+
   // «акрытие файла
   ofile << "}\n";
   ofile.close();
@@ -186,8 +203,9 @@ void generateGraphvizFile(vector<vector<int>> adjacencyMatrix,
   system((graphName + ".png").c_str());
 }
 
-// функци€ дл€ построени€ остовного дерева
-void dfs(vvi adjMatrix, vector<bool> visited, int u, vvi treeAdjMatrix) {
+//-------------------------------------------------------------------
+
+void dfs(vvi adjMatrix, vector<bool> visited, int u, vvi treeAdjMatrix) {    
   int n = adjMatrix.size();
   visited[u] = true;
 
@@ -201,8 +219,9 @@ void dfs(vvi adjMatrix, vector<bool> visited, int u, vvi treeAdjMatrix) {
   }
 }
 
-// функци€ дл€ построени€ остовного дерева
-void getSpanningTree(vvi adjMatrix, vvi treeAdjMatrix) {
+//-------------------------------------------------------------------
+
+void getSpanningTree(vvi adjMatrix, vvi treeAdjMatrix) {    //‘ункци€ дл€ построени€ остовного дерева
   int n = adjMatrix.size();
   vector<bool> visited(n);
 
@@ -217,12 +236,16 @@ void getSpanningTree(vvi adjMatrix, vvi treeAdjMatrix) {
   }
 }
 
-void findMinDomSet(vvi adjMatrix, int n, int k) {
+//-------------------------------------------------------------------
+
+vector<int> findMinDomSet(vvi adjMatrix, int n, int k) {
   vector<int> domSet;  // дл€ хранени€ k-доминирующего множества
+
+  vector<bool> unmarked(n, true);  // дл€ хранени€ маркированных вершин
 
   // пока все вершины не пройдены
   while (true) {
-    vector<bool> unmarked(n, true);  // дл€ хранени€ маркированных вершин
+    
 
     // выбираем вершину с максимальной близостью к неотмеченным вершинам
     int maxDegree = -1;
@@ -232,7 +255,7 @@ void findMinDomSet(vvi adjMatrix, int n, int k) {
 
       int degree = 0;
       for (int j = 0; j < n; j++) {
-        if (adjMatrix[i][j] && !unmarked[j]) degree++;
+        if (adjMatrix[i][j] && unmarked[j]) degree++;
       }
 
       if (degree > maxDegree) {
@@ -240,6 +263,9 @@ void findMinDomSet(vvi adjMatrix, int n, int k) {
         maxDegreeVertex = i;
       }
     }
+
+    cout << "maxDegree: " << maxDegree << endl;
+    cout << "maxDegreeVertex: " << maxDegreeVertex << endl;
 
     if (maxDegreeVertex == -1) break;  // маркировка вершин завершена
 
@@ -252,8 +278,8 @@ void findMinDomSet(vvi adjMatrix, int n, int k) {
       if (adjMatrix[maxDegreeVertex][i]) unmarked[i] = false;
     }
 
-    if (domSet.size() >= k)
-      break;  // выбрано достаточное количество вершин дл€ к-доминирующего
+    //if (domSet.size() >= k)
+      //break;  // выбрано достаточное количество вершин дл€ к-доминирующего
               // множества
   }
 
@@ -263,6 +289,127 @@ void findMinDomSet(vvi adjMatrix, int n, int k) {
     if (i > 0) cout << ", ";
     cout << domSet[i];  // +1 - дл€ вывода вершин начина€ с 1
   }
+  return domSet;
+}
+
+//-------------------------------------------------------------------
+
+vector<int> findKDomSet1(vvi adjMatrix, int n, int k) {
+
+  vector<int> domSet;
+  vector<bool> unmarked(n, true);
+
+  while (true) {
+    // выбираем вершину с максимальной близостью к неотмеченным вершинам
+    int maxDegree = -1;
+    int maxDegreeVertex = -1;
+    for (int i = 0; i < n; i++) {
+      cout << unmarked[i] << endl;
+      if (!unmarked[i]) continue;
+
+      int degree = 0;
+      for (int j = 0; j < n; j++) {
+        if (adjMatrix[i][j] && unmarked[j]) degree++;
+      }
+
+      if (degree > maxDegree) {
+        maxDegree = degree;
+        maxDegreeVertex = i;
+      }
+    }
+
+    cout << "maxDegree: " << maxDegree << endl;
+    cout << "maxDegreeVertex: " << maxDegreeVertex << endl;
+
+    if (maxDegreeVertex == -1) break;  // маркировка вершин завершена
+
+    domSet.push_back(maxDegreeVertex);  // добавл€ем выбранную вершину в
+                                        // к-доминирующее множество
+    unmarked[maxDegreeVertex] = false;  // помечаем выбранную вершину
+
+    vector<int> kNeighbors =
+        getVerticesAtDistanceKOrLess(adjMatrix, maxDegreeVertex, k);
+
+    for (int i = 0; i < kNeighbors.size(); i++) {
+      unmarked[kNeighbors[i]] = false;
+    }
+
+    // if (domSet.size() >= k)
+    // break;  // выбрано достаточное количество вершин дл€ к-доминирующего
+    // множества
+  }
+
+  // ¬ывод множества на экран
+  cout << k << "-dominating set by heuristic 1: ";
+  for (int i = 0; i < domSet.size(); i++) {
+    if (i > 0) cout << ", ";
+    cout << domSet[i];  // +1 - дл€ вывода вершин начина€ с 1
+  }
+  return domSet;
+
+}
+
+//-------------------------------------------------------------------
+
+vector<int> findKDomSet2(vvi adjMatrix, int n, int k, int alpha, double loopTime) {
+
+  vector<int> domSet;
+  vector<bool> unmarked(n, true);
+  double workTime = 0;
+
+  while (true) {
+    if (workTime >= loopTime ||
+        find(unmarked.begin(), unmarked.end(), 1) == unmarked.end()) {
+      break;
+    }
+
+    double start = clock();
+    int maxDegree = -1;
+    int maxDegreeVertex = -1;
+    for (int i = 0; i < n; i++) {
+      cout << unmarked[i] << endl;
+      if (!unmarked[i]) continue;
+
+      int degree = 0;
+      for (int j = 0; j < n; j++) {
+        if (adjMatrix[i][j] && unmarked[j]) degree++;
+      }
+
+      if (degree > maxDegree) {             //TODO: ƒописать эту функцию!!!
+        maxDegree = degree;
+        maxDegreeVertex = i;
+      }
+    }
+
+    cout << "maxDegree: " << maxDegree << endl;
+    cout << "maxDegreeVertex: " << maxDegreeVertex << endl;
+
+    vector<int> kNeighbors =
+        getVerticesAtDistanceKOrLess(adjMatrix, maxDegreeVertex, k);
+    vector<int> notDominatedKNeighbors;
+    for (int i = 0; i < kNeighbors.size(); i++) {
+      if (unmarked[kNeighbors[i]]) {
+        notDominatedKNeighbors.push_back(kNeighbors[i]);
+      }
+    }
+
+    if (notDominatedKNeighbors.size() >= alpha) {
+      
+    }
+
+    double finish = clock();
+    workTime = finish - start;
+  }
+
+  // ¬ывод множества на экран
+  cout << k << "-dominating set by heuristic 2: ";
+  for (int i = 0; i < domSet.size(); i++) {
+    if (i > 0) cout << ", ";
+    cout << domSet[i];  // +1 - дл€ вывода вершин начина€ с 1
+  }
+
+  return domSet;
+
 }
 
 
@@ -271,7 +418,7 @@ int main() {
                       // генератора случайных чисел
   //int n = rand() % 10 + 2;  // генерируем число вершин в диапазоне от 1 до 500
   //int m = rand() % (n * (n - 1) / 2) + 1;  // генерируем число ребер в диапазоне от 1 до n * (n - 1) / 2
-  int n = 4 + rand() % (10 - 4 + 1);
+  int n = 7 + rand() % (10 - 7 + 1);
   int m = rand() % (n * (n - 1) / 2) + 1;
   vvi adjMatrix = generateGraph(n, m);
   // выводим граф в виде матрицы смежности
@@ -339,10 +486,14 @@ int main() {
   string graphName = "exampleGraph";
   //string treeName = "exampleTree";
 
-  generateGraphvizFile(newAdjMatrix, graphName);
+  vector<int> kDomSet = findKDomSet1(newAdjMatrix, nn, 2);
+
+  //vector<int> kDomSet = findMinDomSet(newAdjMatrix, nn, 2);
+
+  generateGraphvizFile(newAdjMatrix, graphName, kDomSet);
   //generateGraphvizFile(treeAdjMatrix, treeName);
 
-  findMinDomSet(newAdjMatrix, nn, 2);
+  
 
   return 0;
 }
