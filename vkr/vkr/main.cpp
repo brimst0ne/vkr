@@ -217,41 +217,8 @@ void generateGraphvizFile(vector<vector<int>> adjacencyMatrix,    //‘ункци€ дл€ 
   ofile.close();
 
   //  оманды дл€ генерации изображени€ графа
-  system(("dot -Tpng " + graphName + ".gv -o " + graphName + ".png").c_str());
+  system(("fdp -Tpng " + graphName + ".gv -o " + graphName + ".png").c_str());
   system((graphName + ".png").c_str());
-}
-
-//-------------------------------------------------------------------
-
-void dfs(vvi adjMatrix, vector<bool> visited, int u, vvi treeAdjMatrix) {    
-  int n = adjMatrix.size();
-  visited[u] = true;
-
-  for (int v = 0; v < n; v++) {
-    if (adjMatrix[u][v] && visited[v] == false) {
-      // добавл€ем ребро (u, v) в остовное дерево
-      treeAdjMatrix[u][v] = 1;
-      treeAdjMatrix[v][u] = 1;
-      dfs(adjMatrix, visited, v, treeAdjMatrix);
-    }
-  }
-}
-
-//-------------------------------------------------------------------
-
-void getSpanningTree(vvi adjMatrix, vvi treeAdjMatrix) {    //‘ункци€ дл€ построени€ остовного дерева
-  int n = adjMatrix.size();
-  vector<bool> visited(n);
-
-  // инициализируем массив visited
-  for (int i = 0; i < n; i++) visited[i] = false;
-
-  // построение остовного дерева
-  for (int u = 0; u < n; u++) {
-    if (visited[u] == false) {
-      dfs(adjMatrix, visited, u, treeAdjMatrix);
-    }
-  }
 }
 
 //-------------------------------------------------------------------
@@ -689,6 +656,18 @@ vector<vector<int>> BA_graph(int n, int m) {
 }
 
 //-------------------------------------------------------------------
+
+vector<int> romanKDomSet(vvi adjMatrix, vi devices) {
+
+  vector<int> domSet;
+
+
+
+  return domSet;
+
+}
+
+//-------------------------------------------------------------------
 //-------------------------------------------------------------------
 
 
@@ -697,7 +676,7 @@ int main() {
                       // генератора случайных чисел
   //int n = rand() % 10 + 2;  // генерируем число вершин в диапазоне от 1 до 500
   //int m = rand() % (n * (n - 1) / 2) + 1;  // генерируем число ребер в диапазоне от 1 до n * (n - 1) / 2
-  int n = 20 + rand() % (40 - 20 + 1);
+  int n = 10 + rand() % (20 - 10 + 1);
   int m = rand() % (n * (n - 1) / 2) + 1;
   vvi adjMatrix = generateGraph(n, m);
   //vvi adjMatrix = BA_graph(n, 2);
@@ -773,7 +752,7 @@ int main() {
   cout << "HEU1 work time = " << time / 1000.0 << endl;
 
   start = clock();
-  vector<int> kDomSet2 = HEU2(newAdjMatrix, nn, 1, 2, 0.001);
+  vector<int> kDomSet2 = HEU2(newAdjMatrix, nn, 1, 2, 0.005);
   time = clock() - start;
   cout << "HEU2 work time = " << time / 1000.0 << endl;
 
