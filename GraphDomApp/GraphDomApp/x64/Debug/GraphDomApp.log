@@ -1,0 +1,4 @@
+﻿  MyForm.cpp
+C:\Users\TEMYCH\source\repos\GraphDomApp\GraphDomApp\MyForm.cpp(4,47): warning C4829: Возможно, неправильные параметры функции main. Рекомендуемый вариант - "int main(Platform::Array<Platform::String^>^ argv)"
+  MyForm.obj : обнаружен модуль MSIL; для MSIL последовательная компоновка отключена; выполняется полная компоновка
+  GraphDomApp.vcxproj -> C:\Users\TEMYCH\source\repos\GraphDomApp\x64\Debug\GraphDomApp.exe

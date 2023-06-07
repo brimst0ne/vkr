@@ -1,0 +1,3 @@
+C:\Users\TEMYCH\source\repos\GraphDomApp\GraphDomApp\Debug\GraphDomApp.vcxprojAssemblyReference.cache
+C:\Users\TEMYCH\source\repos\GraphDomApp\GraphDomApp\Debug\GraphDomApp.MyForm.resources
+C:\Users\TEMYCH\source\repos\GraphDomApp\GraphDomApp\Debug\GraphDomApp.vcxproj.GenerateResource.cache
