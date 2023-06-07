@@ -397,3 +397,51 @@ vector<vector<int>> BA_graph(int n, int m) {
   }
   return graph;
 }
+
+int calculateGraphRadius(const std::vector<std::vector<int>>& adjacencyMatrix) {
+  int n = adjacencyMatrix.size();
+
+  // Инициализация матрицы расстояний
+  std::vector<std::vector<int>> distance(n, std::vector<int>(n, INF));
+
+  // Вычисление кратчайших расстояний между всеми парами вершин с помощью
+  // алгоритма Флойда-Уоршелла
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+      if (adjacencyMatrix[i][j] != 0) {
+        distance[i][j] = adjacencyMatrix[i][j];
+      }
+    }
+  }
+
+  for (int k = 0; k < n; ++k) {
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < n; ++j) {
+        if (distance[i][k] != INF && distance[k][j] != INF &&
+            distance[i][k] + distance[k][j] < distance[i][j]) {
+          distance[i][j] = distance[i][k] + distance[k][j];
+        }
+      }
+    }
+  }
+
+  // Находим максимальное расстояние в каждой строке матрицы расстояний
+  std::vector<int> maxDistances(n, 0);
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+      if (distance[i][j] > maxDistances[i]) {
+        maxDistances[i] = distance[i][j];
+      }
+    }
+  }
+
+  // Находим минимальное из максимальных расстояний
+  int graphRadius = INF;
+  for (int i = 0; i < n; ++i) {
+    if (maxDistances[i] < graphRadius) {
+      graphRadius = maxDistances[i];
+    }
+  }
+
+  return graphRadius;
+}

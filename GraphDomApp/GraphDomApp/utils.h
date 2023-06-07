@@ -10,11 +10,14 @@
 #include <random>
 #include <fstream>
 #include <unordered_set>
+#include <limits>
 
 using namespace std;
 
 typedef vector<int> vi;
 typedef vector<vector<int>> vvi;
+
+const int INF = std::numeric_limits<int>::max();
 
 bool hasDuplicate(vector<int> vec1, vector<int> vec2);
 vvi generateGraph(int n, int m);
@@ -30,3 +33,4 @@ vector<int> HEU1(vvi adjMatrix, int n, int k);
 vector<int> HEU2(vvi adjMatrix, int n, int k, int alpha, double loopTime);
 vector<int> redundantRemoval(vvi adjMatrix, vector<int> domSet, int k);
 vector<vector<int>> BA_graph(int n, int m);
+int calculateGraphRadius(const std::vector<std::vector<int>>& adjacencyMatrix);
