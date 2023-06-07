@@ -1,12 +1,12 @@
 ﻿  main.cpp
-C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(36,13): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(65,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(83,3): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(115,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(151,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(189,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(584,10): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
-C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(611,7): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
-C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(675,13): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-C:\Users\TEMYCH\source\repos\vkr\vkr\main.cpp(710,31): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-  vkr.vcxproj -> C:\Users\TEMYCH\source\repos\vkr\x64\Debug\vkr.exe
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(36,13): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(65,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(83,3): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(115,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(151,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(189,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(584,10): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(611,7): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(675,13): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(710,31): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+  vkr.vcxproj -> C:\Users\LocalAdm\Desktop\vkr\vkr\x64\Debug\vkr.exe
