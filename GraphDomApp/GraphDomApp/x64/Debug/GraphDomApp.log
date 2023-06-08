@@ -1,5 +1,1 @@
-﻿  MyForm.cpp
-C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\GraphDomApp\MyForm.h(319,1): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\GraphDomApp\MyForm.cpp(4,52): warning C4829: Возможно, неправильные параметры функции main. Рекомендуемый вариант - "int main(Platform::Array<Platform::String^>^ argv)"
-  MyForm.obj : обнаружен модуль MSIL; для MSIL последовательная компоновка отключена; выполняется полная компоновка
-  GraphDomApp.vcxproj -> C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\x64\Debug\GraphDomApp.exe
+﻿  GraphDomApp.vcxproj -> C:\Users\LocalAdm\Desktop\vkr\GraphDomApp\x64\Debug\GraphDomApp.exe

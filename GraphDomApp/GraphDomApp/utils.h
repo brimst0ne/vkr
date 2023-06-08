@@ -34,3 +34,6 @@ vector<int> HEU2(vvi adjMatrix, int n, int k, int alpha, double loopTime);
 vector<int> redundantRemoval(vvi adjMatrix, vector<int> domSet, int k);
 vector<vector<int>> BA_graph(int n, int m);
 int calculateGraphRadius(const std::vector<std::vector<int>>& adjacencyMatrix);
+vector<int> splitGraph(const std::vector<std::vector<int>>& adjacencyMatrix);
+void generatePartitionGraphvizFile(vector<vector<int>> adjacencyMatrix, string graphName,
+                          vector<int> partition);

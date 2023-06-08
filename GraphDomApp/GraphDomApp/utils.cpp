@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <functional>
 
 bool hasDuplicate(vector<int> vec1, vector<int> vec2) {
   unordered_set<int> uniqueNumbers;
@@ -444,4 +445,81 @@ int calculateGraphRadius(const std::vector<std::vector<int>>& adjacencyMatrix) {
   }
 
   return graphRadius;
+}
+
+vector<int> splitGraph(const std::vector<std::vector<int>>& adjacencyMatrix) {
+  int numVertices = adjacencyMatrix.size();
+  std::vector<int> partition(numVertices,
+                             0);  // Пометка вершин 0 и 1 для разбиения
+  std::vector<bool> visited(numVertices, false);  // Флаг посещения вершин
+
+  // Рекурсивная функция для пометки вершин и их разбиения
+  std::function<void(int, int)> dfs = [&](int vertex, int part) {
+    partition[vertex] = part;  // Устанавливаем разбиение для текущей вершины
+    visited[vertex] = true;  // Помечаем вершину как посещенную
+
+    // Перебираем соседей текущей вершины
+    for (int neighbor = 0; neighbor < numVertices; ++neighbor) {
+      if (adjacencyMatrix[vertex][neighbor] == 1 && !visited[neighbor]) {
+        dfs(neighbor, 1 - part);  // Рекурсивно вызываем для непосещенного
+                                  // соседа с другим разбиением
+      }
+    }
+  };
+
+  // Запускаем обход в глубину для каждой вершины
+  for (int vertex = 0; vertex < numVertices; ++vertex) {
+    if (!visited[vertex]) {
+      dfs(vertex,
+          0);  // Запускаем обход с разбиением 0 для первой непосещенной вершины
+    }
+  }
+
+  return partition;
+}
+
+void generatePartitionGraphvizFile(vector<vector<int>> adjacencyMatrix,
+                                   string graphName, vector<int> partition) {
+  int n = adjacencyMatrix.size();
+
+  ofstream ofile;
+  ofile.open(graphName + ".gv");
+
+  // Заголовок графа
+  ofile << "graph " << graphName << " {\n";
+
+  // Вывод вершин
+  for (int i = 0; i < n; i++) {
+    ofile << "\t" << i + 1 << ";\n";
+  }
+
+  // Вывод ребер
+  for (int i = 0; i < n; i++) {
+    for (int j = i; j < n; j++) {
+      if (adjacencyMatrix[i][j] == 1) {
+        ofile << "\t" << i + 1 << " -- " << j + 1 << ";\n";
+      }
+    }
+  }
+
+  /*for (int vertex : partition) {
+    ofile << "    " << vertex + 1 << " [style=filled, fillcolor=red];"
+          << std::endl;
+  }*/
+
+  for (int i = 0; i < partition.size(); i++) {
+    if (partition[i]) {
+      ofile << "    " << i + 1 << " [style=filled, fillcolor=red];" << endl;
+    } else {
+      ofile << "    " << i + 1 << " [style=filled, fillcolor=green];" << endl;
+    }
+  }
+
+  // Закрытие файла
+  ofile << "}\n";
+  ofile.close();
+
+  // Команды для генерации изображения графа
+  system(("fdp -Tpng " + graphName + ".gv -o " + graphName + ".png").c_str());
+  // system((graphName + ".png").c_str());
 }
