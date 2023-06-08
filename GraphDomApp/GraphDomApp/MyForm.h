@@ -271,8 +271,10 @@ namespace GraphDomApp {
                   dataGridView1->Columns->Clear();
                   dataGridView1->Rows->Clear();
                   for (int i = 0; i < number; i++) {
-                    dataGridView1->Columns->Add(
-                        gcnew DataGridViewTextBoxColumn());
+                    DataGridViewTextBoxColumn ^ column =
+                        gcnew DataGridViewTextBoxColumn();
+                    column->Width = 30;
+                    dataGridView1->Columns->Add(column);
                     dataGridView1->Rows->Add();
                   }
 
@@ -320,6 +322,8 @@ namespace GraphDomApp {
                    std::cout << std::endl;
                  }
 
+                 adjacencyMatrix = BA_graph(15, 2);
+
                  msclr::interop::marshal_context context;
                  std::string str = context.marshal_as<std::string>(textBox3->Text);
                  /*int k = System::Convert::ToInt32(textBox2->Text);
@@ -327,7 +331,10 @@ namespace GraphDomApp {
                  vector<int> domSet =
                      HEU1(adjacencyMatrix, adjacencyMatrix.size(), k);
                  generateGraphvizFile(adjacencyMatrix, str, domSet);*/
-                 vector<int> partition = splitGraph(adjacencyMatrix);
+                 //vector<int> partition = splitGraphNew(adjacencyMatrix);
+                 vector<int> partition;
+                 graphCut(adjacencyMatrix, partition);
+                 //branchAndBoundGraphPartitioning(adjacencyMatrix, partition);
                  generatePartitionGraphvizFile(adjacencyMatrix, str, partition);
                }
 

@@ -399,8 +399,10 @@ vector<vector<int>> BA_graph(int n, int m) {
   return graph;
 }
 
-int calculateGraphRadius(const std::vector<std::vector<int>>& adjacencyMatrix) {
+pair<int, int> calculateGraphRadius(const std::vector<std::vector<int>>& adjacencyMatrix) {
   int n = adjacencyMatrix.size();
+
+  pair<int, int> res(INF, INF);
 
   // Инициализация матрицы расстояний
   std::vector<std::vector<int>> distance(n, std::vector<int>(n, INF));
@@ -437,14 +439,18 @@ int calculateGraphRadius(const std::vector<std::vector<int>>& adjacencyMatrix) {
   }
 
   // Находим минимальное из максимальных расстояний
-  int graphRadius = INF;
+  //int graphRadius = INF;
+  //int center = INF;
+
   for (int i = 0; i < n; ++i) {
-    if (maxDistances[i] < graphRadius) {
-      graphRadius = maxDistances[i];
+    if (maxDistances[i] < res.first) {
+      res.first = maxDistances[i];
+      res.second = i;
     }
   }
 
-  return graphRadius;
+  //return graphRadius;
+  return res;
 }
 
 vector<int> splitGraph(const std::vector<std::vector<int>>& adjacencyMatrix) {
@@ -523,3 +529,220 @@ void generatePartitionGraphvizFile(vector<vector<int>> adjacencyMatrix,
   system(("fdp -Tpng " + graphName + ".gv -o " + graphName + ".png").c_str());
   // system((graphName + ".png").c_str());
 }
+
+vector<int> splitGraphNew(const std::vector<std::vector<int>>& adjacencyMatrix) {
+  int numVertices = adjacencyMatrix.size();
+  std::vector<int> partition(numVertices,
+                             -1);  // Пометка вершин 0 и 1 для разбиения
+
+  std::queue<int> bfsQueue;
+  std::vector<bool> visited(numVertices, false);  // Флаг посещения вершин
+
+  int numPartitions = 2;
+  int targetSize = numVertices / numPartitions;
+  int currentSize = 0;
+  int currentPartition = 0;
+
+  // Начинаем обход в ширину для разбиения на две связные половины
+  for (int startVertex = 0; startVertex < numVertices; ++startVertex) {
+    if (visited[startVertex]) {
+      continue;
+    }
+
+    bfsQueue.push(startVertex);
+    visited[startVertex] = true;
+
+    while (!bfsQueue.empty()) {
+      int vertex = bfsQueue.front();
+      bfsQueue.pop();
+
+      partition[vertex] = currentPartition;
+      currentSize++;
+
+      if (currentSize >= targetSize) {
+        currentSize = 0;
+        currentPartition++;
+      }
+
+      for (int neighbor = 0; neighbor < numVertices; ++neighbor) {
+        if (adjacencyMatrix[vertex][neighbor] == 1 && !visited[neighbor]) {
+          bfsQueue.push(neighbor);
+          visited[neighbor] = true;
+        }
+      }
+    }
+  }
+
+  return partition;
+}
+
+vector<int> romanKDomSet(vvi adjMatrix, int k) {
+
+  int n = adjMatrix.size();
+
+  vector<int> domSet;
+  pair<int, int> mid = calculateGraphRadius(adjMatrix);
+  int graphRadius = mid.first;
+  int graphCenter = mid.second;
+
+  if (graphRadius <= k) {
+
+    domSet.push_back(graphCenter);
+
+  } else {
+
+    vector<int> partition = splitGraphNew(adjMatrix);
+    vvi subAdjMatrix1 = buildAdjacencyMatrix(adjMatrix, partition, 0);
+    vvi subAdjMatrix2 = buildAdjacencyMatrix(adjMatrix, partition, 1);
+    pair<int, int> mid1 = calculateGraphRadius(subAdjMatrix1);
+    pair<int, int> mid2 = calculateGraphRadius(subAdjMatrix2);
+    int graphRadius1 = mid1.first;
+    int graphCenter1 = mid1.second;
+    int graphRadius2 = mid2.first;
+    int graphCenter2 = mid2.second;
+    if (graphRadius1 <= k) {
+      domSet.push_back(graphCenter1);
+    }
+    if (graphRadius2 <= k) {
+      domSet.push_back(graphCenter2);
+    }
+
+  }
+
+  return domSet;
+
+}
+
+std::vector<std::vector<int>> buildAdjacencyMatrix(
+    const std::vector<std::vector<int>>& adjacencyMatrix,
+    const std::vector<int>& partition, int part) {
+
+  int numVertices = adjacencyMatrix.size();
+  std::vector<std::vector<int>> subMatrix(numVertices,
+                                          std::vector<int>(numVertices, 0));
+
+  // Заполняем матрицу смежности для заданной половины графа
+  for (int i = 0; i < numVertices; ++i) {
+    if (partition[i] == part) {
+      for (int j = 0; j < numVertices; ++j) {
+        if (partition[j] == part) {
+          subMatrix[i][j] = adjacencyMatrix[i][j];
+        }
+      }
+    }
+  }
+
+  return subMatrix;
+
+}
+
+void multilevelGraphPartitioning(
+    const std::vector<std::vector<int>>& adjacencyMatrix,
+    std::vector<int>& partition) {
+  std::default_random_engine generator(time(0));
+  std::uniform_int_distribution<int> distribution(0, 1);
+  int numVertices = adjacencyMatrix.size();
+  partition.resize(numVertices);
+
+  // Инициализация случайными значениями
+  for (int i = 0; i < numVertices; ++i) {
+    partition[i] = distribution(generator);
+  }
+
+  // Многократное улучшение разбиения
+  bool improvement = true;
+  while (improvement) {
+    improvement = false;
+
+    // Вычисление баланса разбиения
+    int numPartitions = 2;
+    std::vector<int> partitionSize(numPartitions, 0);
+    for (int i = 0; i < numVertices; ++i) {
+      partitionSize[partition[i]]++;
+    }
+    int targetSize = numVertices / numPartitions;
+
+    // Поиск вершины для переключения между разбиениями
+    for (int i = 0; i < numVertices; ++i) {
+      int currentPartition = partition[i];
+
+      // Подсчет веса вершин в текущем разбиении
+      int currentWeight = 0;
+      for (int j = 0; j < numVertices; ++j) {
+        if (j != i && partition[j] == currentPartition) {
+          currentWeight += adjacencyMatrix[i][j];
+        }
+      }
+
+      // Подсчет веса вершин в соседнем разбиении
+      int neighborPartition = 1 - currentPartition;
+      int neighborWeight = 0;
+      for (int j = 0; j < numVertices; ++j) {
+        if (j != i && partition[j] == neighborPartition) {
+          neighborWeight += adjacencyMatrix[i][j];
+        }
+      }
+
+      // Если переключение улучшает баланс, выполнить переключение
+      if (currentWeight - adjacencyMatrix[i][i] > targetSize &&
+          neighborWeight + adjacencyMatrix[i][i] < targetSize) {
+        partition[i] = neighborPartition;
+        improvement = true;
+      }
+    }
+  }
+}
+
+int computeCutSize(const std::vector<std::vector<int>>& adjacencyMatrix,
+                   const std::vector<int>& partition) {
+  int cutSize = 0;
+  int numVertices = partition.size();
+
+  for (int i = 0; i < numVertices; ++i) {
+    for (int j = i + 1; j < numVertices; ++j) {
+      if (partition[i] != partition[j]) {
+        cutSize += adjacencyMatrix[i][j];
+      }
+    }
+  }
+
+  return cutSize;
+}
+
+void graphCut(const std::vector<std::vector<int>>& adjacencyMatrix,
+              std::vector<int>& partition) {
+  int numVertices = adjacencyMatrix.size();
+  partition.resize(numVertices, 0);
+
+  // Инициализация начального разбиения
+  for (int i = 0; i < numVertices; ++i) {
+    partition[i] = (i < numVertices / 2) ? 0 : 1;
+  }
+
+  int bestCutSize = computeCutSize(adjacencyMatrix, partition);
+
+  // Поиск лучшего разреза путем переключения вершин между разбиениями
+  for (int i = 0; i < numVertices; ++i) {
+    for (int j = i + 1; j < numVertices; ++j) {
+      if (partition[i] != partition[j]) {
+        // Переключение вершин i и j между разбиениями
+        partition[i] = 1 - partition[i];
+        partition[j] = 1 - partition[j];
+
+        // Вычисление суммы весов ребер после переключения
+        int cutSize = computeCutSize(adjacencyMatrix, partition);
+
+        // Если сумма весов ребер уменьшилась, обновить лучший разрез
+        if (cutSize < bestCutSize) {
+          bestCutSize = cutSize;
+        } else {
+          // В противном случае, отменить переключение вершин
+          partition[i] = 1 - partition[i];
+          partition[j] = 1 - partition[j];
+        }
+      }
+    }
+  }
+}
+
+
