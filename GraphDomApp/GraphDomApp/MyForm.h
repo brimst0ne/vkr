@@ -326,11 +326,12 @@ namespace GraphDomApp {
                  generateGraphvizFile(adjacencyMatrix, str, domSet);*/
                  //vector<int> partition = splitGraphNew(adjacencyMatrix);
                  vector<int> domSet;
-                 if (k == 1) {
+                 /*if (k == 1) {
                    domSet = HEU1(adjacencyMatrix, adjacencyMatrix.size(), k);
                  } else {
                    domSet = romanKDomSet(adjacencyMatrix, k);
-                 }
+                 }*/
+                 domSet = romanKDomSet(adjacencyMatrix, k);
                  
                  generateGraphvizFile(adjacencyMatrix, str, domSet);
                  //vector<int> partition;
