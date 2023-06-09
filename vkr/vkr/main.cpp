@@ -8,11 +8,14 @@
 #include <random>
 #include <fstream>
 #include <unordered_set>
+#include <limits>
 
 using namespace std;
 
 typedef vector<int> vi;
 typedef vector<vi> vvi;
+
+const int INF = std::numeric_limits<int>::max();
 
 bool hasDuplicate(vector<int> vec1, vector<int> vec2) {
   unordered_set<int> uniqueNumbers;
@@ -657,11 +660,196 @@ vector<vector<int>> BA_graph(int n, int m) {
 
 //-------------------------------------------------------------------
 
-vector<int> romanKDomSet(vvi adjMatrix, vi devices) {
+std::vector<std::vector<int>> buildAdjacencyMatrix(
+    const std::vector<std::vector<int>>& adjacencyMatrix,
+    const std::vector<int>& partition, int part) {
+  int numVertices = adjacencyMatrix.size();
+  std::vector<std::vector<int>> subMatrix(numVertices,
+                                          std::vector<int>(numVertices, 0));
 
+  // Заполняем матрицу смежности для заданной половины графа
+  for (int i = 0; i < numVertices; ++i) {
+    if (partition[i] == part) {
+      for (int j = 0; j < numVertices; ++j) {
+        if (partition[j] == part) {
+          subMatrix[i][j] = adjacencyMatrix[i][j];
+        }
+      }
+    }
+  }
+
+  return subMatrix;
+}
+
+int computeCutSize(const std::vector<std::vector<int>>& adjacencyMatrix,
+                   const std::vector<int>& partition) {
+  int cutSize = 0;
+  int numVertices = partition.size();
+
+  for (int i = 0; i < numVertices; ++i) {
+    for (int j = i + 1; j < numVertices; ++j) {
+      if (partition[i] != partition[j]) {
+        cutSize += adjacencyMatrix[i][j];
+      }
+    }
+  }
+
+  return cutSize;
+}
+
+void graphCut(const std::vector<std::vector<int>>& adjacencyMatrix,
+              std::vector<int>& partition) {
+  int numVertices = adjacencyMatrix.size();
+  partition.resize(numVertices, 0);
+
+  // Инициализация начального разбиения
+  for (int i = 0; i < numVertices; ++i) {
+    partition[i] = (i < numVertices / 2) ? 0 : 1;
+  }
+
+  int bestCutSize = computeCutSize(adjacencyMatrix, partition);
+
+  // Поиск лучшего разреза путем переключения вершин между разбиениями
+  for (int i = 0; i < numVertices; ++i) {
+    for (int j = i + 1; j < numVertices; ++j) {
+      if (partition[i] != partition[j]) {
+        // Переключение вершин i и j между разбиениями
+        partition[i] = 1 - partition[i];
+        partition[j] = 1 - partition[j];
+
+        // Вычисление суммы весов ребер после переключения
+        int cutSize = computeCutSize(adjacencyMatrix, partition);
+
+        // Если сумма весов ребер уменьшилась, обновить лучший разрез
+        if (cutSize < bestCutSize) {
+          bestCutSize = cutSize;
+        } else {
+          // В противном случае, отменить переключение вершин
+          partition[i] = 1 - partition[i];
+          partition[j] = 1 - partition[j];
+        }
+      }
+    }
+  }
+}
+
+pair<int, int> calculateGraphRadius(
+    const std::vector<std::vector<int>>& adjacencyMatrix) {
+  int n = adjacencyMatrix.size();
+  vector<bool> hasNeighbors(adjacencyMatrix.size(), false);
+
+  pair<int, int> res(INF, INF);
+
+  // Инициализация матрицы расстояний
+  std::vector<std::vector<int>> distance(n, std::vector<int>(n, INF));
+
+  // Вычисление кратчайших расстояний между всеми парами вершин с помощью
+  // алгоритма Флойда-Уоршелла
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+      if (adjacencyMatrix[i][j] != 0) {
+        hasNeighbors[i] = true;
+        distance[i][j] = adjacencyMatrix[i][j];
+      }
+    }
+  }
+
+  
+
+  for (int k = 0; k < n; ++k) {
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < n; ++j) {
+        if (distance[i][k] != INF && distance[k][j] != INF &&
+            distance[i][k] + distance[k][j] < distance[i][j]) {
+          distance[i][j] = distance[i][k] + distance[k][j];
+        }
+      }
+    }
+  }
+
+  cout << "Distance matrix: " << endl;
+
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      cout << distance[i][j] << " ";
+    }
+    cout << endl;
+  }
+  cout << endl;
+
+  cout << "hasNeighbors: " << endl;
+
+  for (int i = 0; i < n; i++) {
+    cout << hasNeighbors[i] << " ";
+  }
+
+  cout << endl;
+
+  // Находим максимальное расстояние в каждой строке матрицы расстояний
+  std::vector<int> maxDistances(n, 0);
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+      if (distance[i][j] > maxDistances[i] && hasNeighbors[i] && hasNeighbors[j] && i != j) {
+        maxDistances[i] = distance[i][j];
+      }
+    }
+  }
+
+  cout << "maxDistances: " << endl;
+  for (int i = 0; i < n; i++) {
+    cout << maxDistances[i] << " ";
+  }
+  cout << endl;
+
+  // Находим минимальное из максимальных расстояний
+  // int graphRadius = INF;
+  // int center = INF;
+
+  for (int i = 0; i < n; ++i) {
+    if (maxDistances[i] < res.first && hasNeighbors[i]) {
+      res.first = maxDistances[i];
+      res.second = i;
+    }
+  }
+
+  // return graphRadius;
+  return res;
+}
+
+vector<int> romanKDomSet(vvi adjMatrix, int k) {
+
+  vector<int> weights(adjMatrix.size(), 0);
+  vector<vvi> matrices;
   vector<int> domSet;
 
+  matrices.push_back(adjMatrix);
 
+  while (!matrices.empty()) {
+    cout << "matrices.size() = " << matrices.size() << endl;
+    vector<vvi> currMatrices;
+    cout << "currMatrices.size() = " << currMatrices.size() << endl;
+    for (int i = 0; i < matrices.size(); i++) {
+      pair<int, int> currMid = calculateGraphRadius(matrices[i]);
+      int currRadius = currMid.first;
+      cout << "currRadius = " << currRadius << endl;
+      int currCenter = currMid.second;
+      cout << "currCenter = " << currCenter << endl;
+
+      if (currRadius <= k) {
+        weights[currCenter] = currRadius;
+        domSet.push_back(currCenter);
+      } else {
+        vector<int> partition;
+        graphCut(matrices[i], partition);
+        vvi currPart1 = buildAdjacencyMatrix(matrices[i], partition, 0);
+        vvi currPart2 = buildAdjacencyMatrix(matrices[i], partition, 1);
+        currMatrices.push_back(currPart1);
+        currMatrices.push_back(currPart2);
+      }
+    }
+    cout << "currMatrices.size() = " << currMatrices.size() << endl;
+    matrices = currMatrices;
+  }
 
   return domSet;
 
@@ -677,6 +865,7 @@ int main() {
   //int n = rand() % 10 + 2;  // генерируем число вершин в диапазоне от 1 до 500
   //int m = rand() % (n * (n - 1) / 2) + 1;  // генерируем число ребер в диапазоне от 1 до n * (n - 1) / 2
   int n = 10 + rand() % (20 - 10 + 1);
+  //int n = 15;
   int m = rand() % (n * (n - 1) / 2) + 1;
   vvi adjMatrix = generateGraph(n, m);
   //vvi adjMatrix = BA_graph(n, 2);
@@ -714,6 +903,14 @@ int main() {
   cout << "Number of edges: " << nm << endl;
   cout << endl;
 
+  newAdjMatrix = {{0, 1, 0, 0, 0, 0, 0}, 
+                  {1, 0, 1, 0, 0, 0, 0}, 
+                  {0, 1, 0, 1, 0, 0, 0}, 
+                  {0, 0, 1, 0, 1, 0, 0},
+                  {0, 0, 0, 1, 0, 1, 0}, 
+                  {0, 0, 0, 0, 1, 0, 1},
+                  {0, 0, 0, 0, 0, 1, 0}};
+
   int k = 2;
   cout << "Vertices at distance " << k << " from vertex 0: " << endl;
   vi verticesAtDistanceK = getVerticesAtDistanceK(newAdjMatrix, 0, k);
@@ -742,11 +939,11 @@ int main() {
   }*/
   cout << endl;
 
-  string graphName = "exampleGraph";
+  //string graphName = "exampleGraph";
   //string treeName = "exampleTree";
 
   //vector<int> kDomSet = findKDomSet1(newAdjMatrix, nn, 2);
-  unsigned int start = clock();
+  /*unsigned int start = clock();
   vector<int> kDomSet1 = HEU1(newAdjMatrix, nn, 1);
   unsigned int time = clock() - start;
   cout << "HEU1 work time = " << time / 1000.0 << endl;
@@ -761,7 +958,9 @@ int main() {
 
   generateGraphvizFile(newAdjMatrix, "HEU1", kDomSet1);
   generateGraphvizFile(newAdjMatrix, "HEU2", kDomSet2);
-  generateGraphvizFile(newAdjMatrix, "ReducedDomSet", reducedDomSet);
+  generateGraphvizFile(newAdjMatrix, "ReducedDomSet", reducedDomSet);*/
+  vector<int> domSet = romanKDomSet(newAdjMatrix, 2);
+  generateGraphvizFile(newAdjMatrix, "romanKDomSet", domSet);
   //generateGraphvizFile(treeAdjMatrix, treeName);
 
   

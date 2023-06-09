@@ -401,6 +401,7 @@ vector<vector<int>> BA_graph(int n, int m) {
 
 pair<int, int> calculateGraphRadius(const std::vector<std::vector<int>>& adjacencyMatrix) {
   int n = adjacencyMatrix.size();
+  vector<bool> hasNeighbors(adjacencyMatrix.size(), false);
 
   pair<int, int> res(INF, INF);
 
@@ -412,6 +413,7 @@ pair<int, int> calculateGraphRadius(const std::vector<std::vector<int>>& adjacen
   for (int i = 0; i < n; ++i) {
     for (int j = 0; j < n; ++j) {
       if (adjacencyMatrix[i][j] != 0) {
+        hasNeighbors[i] = true;
         distance[i][j] = adjacencyMatrix[i][j];
       }
     }
@@ -432,7 +434,7 @@ pair<int, int> calculateGraphRadius(const std::vector<std::vector<int>>& adjacen
   std::vector<int> maxDistances(n, 0);
   for (int i = 0; i < n; ++i) {
     for (int j = 0; j < n; ++j) {
-      if (distance[i][j] > maxDistances[i]) {
+      if (distance[i][j] > maxDistances[i] && hasNeighbors[i] && hasNeighbors[j] && i != j) {
         maxDistances[i] = distance[i][j];
       }
     }
@@ -443,7 +445,7 @@ pair<int, int> calculateGraphRadius(const std::vector<std::vector<int>>& adjacen
   //int center = INF;
 
   for (int i = 0; i < n; ++i) {
-    if (maxDistances[i] < res.first) {
+    if (maxDistances[i] < res.first && hasNeighbors[i]) {
       res.first = maxDistances[i];
       res.second = i;
     }
@@ -578,35 +580,32 @@ vector<int> splitGraphNew(const std::vector<std::vector<int>>& adjacencyMatrix) 
 
 vector<int> romanKDomSet(vvi adjMatrix, int k) {
 
-  int n = adjMatrix.size();
-
+  vector<int> weights(adjMatrix.size(), 0);
+  vector<vvi> matrices;
   vector<int> domSet;
-  pair<int, int> mid = calculateGraphRadius(adjMatrix);
-  int graphRadius = mid.first;
-  int graphCenter = mid.second;
 
-  if (graphRadius <= k) {
+  matrices.push_back(adjMatrix);
 
-    domSet.push_back(graphCenter);
+  while (!matrices.empty()) {
+    vector<vvi> currMatrices;
+    for (int i = 0; i < matrices.size(); i++) {
+      pair<int, int> currMid = calculateGraphRadius(matrices[i]);
+      int currRadius = currMid.first;
+      int currCenter = currMid.second;
 
-  } else {
-
-    vector<int> partition = splitGraphNew(adjMatrix);
-    vvi subAdjMatrix1 = buildAdjacencyMatrix(adjMatrix, partition, 0);
-    vvi subAdjMatrix2 = buildAdjacencyMatrix(adjMatrix, partition, 1);
-    pair<int, int> mid1 = calculateGraphRadius(subAdjMatrix1);
-    pair<int, int> mid2 = calculateGraphRadius(subAdjMatrix2);
-    int graphRadius1 = mid1.first;
-    int graphCenter1 = mid1.second;
-    int graphRadius2 = mid2.first;
-    int graphCenter2 = mid2.second;
-    if (graphRadius1 <= k) {
-      domSet.push_back(graphCenter1);
+      if (currRadius <= k) {
+        weights[currCenter] = currRadius;
+        domSet.push_back(currCenter);
+      } else {
+        vector<int> partition;
+        graphCut(matrices[i], partition);
+        vvi currPart1 = buildAdjacencyMatrix(matrices[i], partition, 0);
+        vvi currPart2 = buildAdjacencyMatrix(matrices[i], partition, 1);
+        currMatrices.push_back(currPart1);
+        currMatrices.push_back(currPart2);
+      }
     }
-    if (graphRadius2 <= k) {
-      domSet.push_back(graphCenter2);
-    }
-
+    matrices = currMatrices;
   }
 
   return domSet;
