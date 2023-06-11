@@ -1,16 +1,19 @@
 ﻿  main.cpp
-C:\Users\TEMYCH\Desktop\vkr\vkr\vkr\main.cpp(39,13): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\vkr\vkr\main.cpp(68,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\vkr\vkr\main.cpp(86,3): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\vkr\vkr\main.cpp(118,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\vkr\vkr\main.cpp(154,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\vkr\vkr\main.cpp(192,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\vkr\vkr\main.cpp(587,10): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\vkr\vkr\main.cpp(614,7): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
-C:\Users\TEMYCH\Desktop\vkr\vkr\vkr\main.cpp(666,43): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\vkr\vkr\main.cpp(687,37): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\vkr\vkr\main.cpp(702,43): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\vkr\vkr\main.cpp(738,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\vkr\vkr\main.cpp(863,13): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\vkr\vkr\main.cpp(899,31): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-  vkr.vcxproj -> C:\Users\TEMYCH\Desktop\vkr\vkr\x64\Debug\vkr.exe
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(39,13): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(68,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(86,3): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(118,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(154,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(192,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(587,10): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(614,7): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(666,43): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(687,37): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(702,43): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(738,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(885,5): error C2181: недопустимый else без парного if
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(969,52): error C2601: romanKDomSetHEU1: недопустимые локальные определения функций
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(858): message : эта строка содержит скобку "{", которая пока не имеет парной
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(1094,12): error C2601: main: недопустимые локальные определения функций
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(858): message : эта строка содержит скобку "{", которая пока не имеет парной
+C:\Users\LocalAdm\Desktop\vkr\vkr\vkr\main.cpp(858): fatal error C1075: "{": не найдена несоответствующая лексема
