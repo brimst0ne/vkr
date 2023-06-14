@@ -744,4 +744,320 @@ void graphCut(const std::vector<std::vector<int>>& adjacencyMatrix,
   }
 }
 
+vector<int> romanKDomSetHEU(vvi adjMatrix, int k) {
+  vector<int> domSet;
+  vector<int> sortedVertices = sortVerticesByDegree(adjMatrix);
+  vector<int> weights(adjMatrix.size(), 0);
+  int currentK = k;
+
+  vector<bool> isCovered(adjMatrix.size(), false);
+
+  std::cout << "sortedVertices: " << endl;
+  for (int i = 0; i < sortedVertices.size(); i++) {
+    std::cout << sortedVertices[i] << " ";
+  }
+  cout << endl;
+
+  pair<int, int> mid = calculateGraphRadius(adjMatrix);
+  int radius = mid.first;
+  int center = mid.second;
+
+  if (radius <= k) {
+    domSet.push_back(center);
+    weights[center] = radius;
+    isCovered[center] = true;
+    vector<int> neighbors =
+        getVerticesAtDistanceKOrLess(adjMatrix, center, radius);
+    for (int i = 0; i < neighbors.size(); i++) {
+      isCovered[neighbors[i]] = true;
+    }
+  } else {
+      for (int i = 0; i < sortedVertices.size(); i++) {
+        if (!isCovered[sortedVertices[i]]) {
+          domSet.push_back(sortedVertices[i]);
+          isCovered[sortedVertices[i]] = true;
+
+          vector<int> currentNeighbors = getVerticesAtDistanceKOrLess(
+              adjMatrix, sortedVertices[i], currentK);
+          int notDominated = 0;
+          for (int j = 0; j < currentNeighbors.size(); j++) {
+            if (!isCovered[currentNeighbors[j]]) {
+              notDominated++;
+            }
+          }
+
+          cout << "currentNeighbors: ";
+          for (int j = 0; j < currentNeighbors.size(); j++) {
+            cout << currentNeighbors[j] << " ";
+          }
+          cout << endl;
+
+          vector<int> currentNeighborsLess = getVerticesAtDistanceKOrLess(
+              adjMatrix, sortedVertices[i], currentK - 1);
+          int notDominatedLess = 0;
+          for (int j = 0; j < currentNeighborsLess.size(); j++) {
+            if (!isCovered[currentNeighborsLess[j]]) {
+              notDominatedLess++;
+            }
+          }
+          cout << "current vertex = " << sortedVertices[i] << endl;
+          cout << "notDominated = " << notDominated << endl;
+          cout << "notDominatedLess = " << notDominatedLess << endl;
+          cout << "currentK = " << currentK << endl;
+          cout << endl;
+
+          while (notDominated == notDominatedLess && notDominated != 0) {
+            cout << "while" << endl;
+            currentK--;
+            currentNeighbors = getVerticesAtDistanceKOrLess(
+                adjMatrix, sortedVertices[i], currentK);
+            notDominated = 0;
+            for (int j = 0; j < currentNeighbors.size(); j++) {
+              if (!isCovered[currentNeighbors[i]]) {
+                notDominated++;
+              }
+            }
+            currentNeighborsLess = getVerticesAtDistanceKOrLess(
+                adjMatrix, sortedVertices[i], currentK - 1);
+            notDominatedLess = 0;
+            for (int j = 0; j < currentNeighborsLess.size(); j++) {
+              if (!isCovered[currentNeighborsLess[i]]) {
+                notDominatedLess++;
+              }
+            }
+          }
+
+          weights[sortedVertices[i]] = currentK;
+          for (int j = 0; j < currentNeighbors.size(); j++) {
+            isCovered[currentNeighbors[j]] = true;
+          }
+          cout << endl;
+        }
+        currentK = k;
+      }
+    }
+
+    cout << k << "-dominating set by Roman " << k << "-dom heuristic : ";
+    for (int i = 0; i < domSet.size(); i++) {
+      if (i > 0) cout << ", ";
+      cout << domSet[i];
+    }
+    cout << endl;
+
+    cout << "weights: " << endl;
+    for (int i = 0; i < weights.size(); i++) {
+      cout << weights[i] << " ";
+    }
+    cout << endl;
+
+    return domSet;
+}
+
+vector<int> romanKDomSetHEU1(vvi adjMatrix, int k) {
+  vector<int> domSet;
+  vector<int> sortedVertices = sortVerticesByDegree(adjMatrix);
+  vector<int> weights(adjMatrix.size(), 0);
+  int currentK = k;
+
+  for (int i = 0; i < sortedVertices.size(); i++) {
+    cout << sortedVertices[i] << " ";
+  }
+  cout << endl;
+
+  vector<bool> isCovered(adjMatrix.size(), false);
+
+  pair<int, int> mid = calculateGraphRadius(adjMatrix);
+  int radius = mid.first;
+  int center = mid.second;
+  cout << "radius = " << radius << endl;
+
+  if (radius <= k) {
+    domSet.push_back(center);
+    weights[center] = radius;
+    isCovered[center] = true;
+    vector<int> neighbors =
+        getVerticesAtDistanceKOrLess(adjMatrix, center, radius);
+    for (int i = 0; i < neighbors.size(); i++) {
+      isCovered[neighbors[i]] = true;
+    }
+  } else {
+    for (int i = 0; i < sortedVertices.size(); i++) {
+      if (!isCovered[sortedVertices[i]]) {
+        domSet.push_back(sortedVertices[i]);
+        isCovered[sortedVertices[i]] = true;
+        weights[sortedVertices[i]] = k;
+        vector<int> currentNeighbors =
+            getVerticesAtDistanceKOrLess(adjMatrix, sortedVertices[i], k);
+        for (int j = 0; j < currentNeighbors.size(); j++) {
+          isCovered[currentNeighbors[j]] = true;
+        }
+      }
+    }
+  }
+
+  cout << "weights: " << endl;
+  for (int i = 0; i < weights.size(); i++) {
+    cout << weights[i] << ", ";
+  }
+  cout << endl;
+
+  for (int i = 0; i < domSet.size(); i++) {
+    vector<int> neighbors =
+        getVerticesAtDistanceKOrLess(adjMatrix, domSet[i], currentK);
+    cout << "neighbors: ";
+    for (int j = 0; j < neighbors.size(); j++) {
+      cout << neighbors[j] << " ";
+    }
+    cout << endl;
+    int dominated = 0;
+    for (int j = 0; j < neighbors.size(); j++) {
+      cout << isCovered[neighbors[j]];
+      if (isCovered[neighbors[j]]) {
+        dominated++;
+      }
+    }
+    cout << endl;
+    vector<int> neighborsLess =
+        getVerticesAtDistanceKOrLess(adjMatrix, domSet[i], currentK - 1);
+    cout << "neighborsLess: ";
+    for (int j = 0; j < neighborsLess.size(); j++) {
+      cout << neighborsLess[j] << " ";
+    }
+    cout << endl;
+    int dominatedLess = 0;
+    for (int j = 0; j < neighborsLess.size(); j++) {
+      cout << isCovered[neighborsLess[j]];
+      if (isCovered[neighborsLess[j]]) {
+        dominatedLess++;
+      }
+    }
+    cout << endl;
+
+    cout << "vertex " << domSet[i] << endl;
+    cout << "dominated = " << dominated << endl;
+    cout << "dominatedLess = " << dominatedLess << endl;
+    cout << "currentK = " << currentK << endl;
+
+    while (dominated == dominatedLess && dominated != 0) {
+      currentK--;
+      neighbors = getVerticesAtDistanceKOrLess(adjMatrix, domSet[i], currentK);
+      dominated = 0;
+      for (int j = 0; j < neighbors.size(); j++) {
+        if (isCovered[neighbors[j]]) {
+          dominated++;
+        }
+      }
+      neighborsLess =
+          getVerticesAtDistanceKOrLess(adjMatrix, domSet[i], currentK - 1);
+      dominatedLess = 0;
+      for (int j = 0; j < neighborsLess.size(); j++) {
+        if (isCovered[neighborsLess[j]]) {
+          dominatedLess++;
+        }
+      }
+
+      weights[domSet[i]] = currentK;
+    }
+    currentK = k;
+  }
+
+  cout << "weights: " << endl;
+  for (int i = 0; i < weights.size(); i++) {
+    if (i > 0) cout << ", ";
+    cout << weights[i];
+  }
+  cout << endl;
+  cout << k << "-dominating set by heuristic 1: ";
+  for (int i = 0; i < domSet.size(); i++) {
+    if (i > 0) cout << ", ";
+    cout << domSet[i];
+  }
+  cout << endl;
+
+  return domSet;
+}
+
+vector<int> romanKDomSetHEU2(vvi adjMatrix, int k, int alpha, double loopTime) {
+  vector<int> domSet;
+  vector<int> sortedVertices = sortVerticesByDegree(adjMatrix);
+  vector<int> weights(adjMatrix.size(), 0);
+  int currentK = k;
+
+  for (int i = 0; i < sortedVertices.size(); i++) {
+    cout << sortedVertices[i] << " ";
+  }
+  cout << endl;
+
+  vector<bool> isCovered(adjMatrix.size(), false);
+  double workTime = 0;
+  pair<int, int> mid = calculateGraphRadius(adjMatrix);
+  int radius = mid.first;
+  int center = mid.second;
+  if (radius <= k) {
+    domSet.push_back(center);
+    weights[center] = radius;
+    isCovered[center] = true;
+    vector<int> neighbors =
+        getVerticesAtDistanceKOrLess(adjMatrix, center, radius);
+    for (int i = 0; i < neighbors.size(); i++) {
+      isCovered[neighbors[i]] = true;
+    }
+  } else {
+    for (int i = 0; i < sortedVertices.size(); i++) {
+      double start = clock() / 1000.0;
+
+      if (workTime >= loopTime ||
+          find(isCovered.begin(), isCovered.end(), false) == isCovered.end()) {
+        break;
+      }
+
+      vector<int> kNeighbors =
+          getVerticesAtDistanceKOrLess(adjMatrix, sortedVertices[i], k);
+      vector<int> notDominatedNeighbors;
+
+      for (int k = 0; k < kNeighbors.size(); k++) {
+        if (!isCovered[kNeighbors[k]]) {
+          notDominatedNeighbors.push_back(kNeighbors[k]);
+        }
+      }
+
+      if (!isCovered[sortedVertices[i]] ||
+          notDominatedNeighbors.size() >= alpha) {
+        domSet.push_back(sortedVertices[i]);
+        isCovered[sortedVertices[i]] = true;
+        for (int j = 0; j < kNeighbors.size(); j++) {
+          isCovered[kNeighbors[j]] = true;
+        }
+      }
+      double finish = clock() / 1000.0;
+      workTime = finish - start;
+      cout << workTime << endl;
+    }
+
+    for (int i = 0; i < sortedVertices.size(); i++) {
+      if (!isCovered[sortedVertices[i]]) {
+        cout << "HEU1 WORKING" << endl;
+        domSet.push_back(sortedVertices[i]);
+        isCovered[sortedVertices[i]] = true;
+        vector<int> currentNeighbors =
+            getVerticesAtDistanceKOrLess(adjMatrix, sortedVertices[i], k);
+        for (int j = 0; j < currentNeighbors.size(); j++) {
+          isCovered[currentNeighbors[j]] = true;
+        }
+      }
+    }
+  }
+
+  
+
+  cout << k << "-dominating set by roman heuristic 2: ";
+  for (int i = 0; i < domSet.size(); i++) {
+    if (i > 0) cout << ", ";
+    cout << domSet[i];
+  }
+  cout << endl;
+
+  return domSet;
+}
+
 

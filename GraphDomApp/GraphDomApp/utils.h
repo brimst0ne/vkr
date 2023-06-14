@@ -51,3 +51,6 @@ int computeCutSize(const std::vector<std::vector<int>>& adjacencyMatrix,
                    const std::vector<int>& partition);
 void graphCut(const std::vector<std::vector<int>>& adjacencyMatrix,
               std::vector<int>& partition);
+vector<int> romanKDomSetHEU(vvi adjMatrix, int k);
+vector<int> romanKDomSetHEU1(vvi adjMatrix, int k);
+vector<int> romanKDomSetHEU2(vvi adjMatrix, int k, int alpha, double loopTime);

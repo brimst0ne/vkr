@@ -872,6 +872,7 @@ vector<int> romanKDomSetHEU(vvi adjMatrix, int k) {
 
   pair<int, int> mid = calculateGraphRadius(adjMatrix);
   int radius = mid.first;
+  cout << "radius = " << radius << endl;
   int center = mid.second;
 
   if (radius <= k) {
@@ -882,6 +883,7 @@ vector<int> romanKDomSetHEU(vvi adjMatrix, int k) {
         getVerticesAtDistanceKOrLess(adjMatrix, center, radius);
     for (int i = 0; i < neighbors.size(); i++) {
       isCovered[neighbors[i]] = true;
+    }
   } else {
     for (int i = 0; i < sortedVertices.size(); i++) {
       if (!isCovered[sortedVertices[i]]) {
@@ -982,6 +984,7 @@ vector<int> romanKDomSetHEU1(vvi adjMatrix, int k) {
   pair<int, int> mid = calculateGraphRadius(adjMatrix);
   int radius = mid.first;
   int center = mid.second;
+  cout << "radius = " << radius << endl;
 
   if (radius <= k) {
     domSet.push_back(center);
@@ -1009,7 +1012,7 @@ vector<int> romanKDomSetHEU1(vvi adjMatrix, int k) {
   
   cout << "weights: " << endl;
   for (int i = 0; i < weights.size(); i++) {
-    cout << weights[i] << " ";
+    cout << weights[i] << ", ";
   }
   cout << endl;
   
@@ -1028,6 +1031,7 @@ vector<int> romanKDomSetHEU1(vvi adjMatrix, int k) {
         dominated++;
       }
     }
+    cout << endl;
     vector<int> neighborsLess =
         getVerticesAtDistanceKOrLess(adjMatrix, domSet[i], currentK - 1);
     cout << "neighborsLess: ";
@@ -1042,6 +1046,7 @@ vector<int> romanKDomSetHEU1(vvi adjMatrix, int k) {
         dominatedLess++;
       }
     }
+    cout << endl;
 
     cout << "vertex " << domSet[i] << endl;
     cout << "dominated = " << dominated << endl;
@@ -1135,13 +1140,13 @@ int main() {
   cout << "Number of edges: " << nm << endl;
   cout << endl;
 
-  /*newAdjMatrix = {{0, 1, 0, 0, 0, 0, 0}, 
+  newAdjMatrix = {{0, 1, 0, 0, 0, 0, 0}, 
                   {1, 0, 1, 0, 0, 0, 0}, 
                   {0, 1, 0, 1, 0, 0, 0}, 
                   {0, 0, 1, 0, 1, 0, 0},
                   {0, 0, 0, 1, 0, 1, 0}, 
                   {0, 0, 0, 0, 1, 0, 1},
-                  {0, 0, 0, 0, 0, 1, 0}};*/
+                  {0, 0, 0, 0, 0, 1, 0}};
 
   int k = 2;
   cout << "Vertices at distance " << k << " from vertex 0: " << endl;
