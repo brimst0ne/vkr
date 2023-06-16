@@ -1,3 +1,6 @@
 C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\GraphDomApp\x64\Release\GraphDomApp.vcxprojAssemblyReference.cache
 C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\GraphDomApp\x64\Release\GraphDomApp.MyForm.resources
 C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\GraphDomApp\x64\Release\GraphDomApp.vcxproj.GenerateResource.cache
+C:\Users\LocalAdm\Desktop\vkr\GraphDomApp\GraphDomApp\x64\Release\GraphDomApp.vcxproj.AssemblyReference.cache
+C:\Users\LocalAdm\Desktop\vkr\GraphDomApp\GraphDomApp\x64\Release\GraphDomApp.MyForm.resources
+C:\Users\LocalAdm\Desktop\vkr\GraphDomApp\GraphDomApp\x64\Release\GraphDomApp.vcxproj.GenerateResource.cache

@@ -17,77 +17,6 @@ bool hasDuplicate(vector<int> vec1, vector<int> vec2) {
   return false;
 }
 
-vvi generateGraph(int n, int m) {
-  srand(time(NULL));
-
-  vvi adjMatrix(n, vi(n, 0));  // создаем пустую матрицу смежности
-  queue<int> q;
-  q.push(0);  // начинаем обход графа с вершины 0
-  vi visited(n, false);  // массив для отслеживания посещенных вершин
-  visited[0] = true;
-  while (!q.empty()) {
-    int u = q.front();
-    q.pop();
-    for (int v = u + 1; v < n; v++) {
-      if (rand() % 2 == 0) {
-        adjMatrix[u][v] = adjMatrix[v][u] = 1;
-        if (!visited[v]) {
-          visited[v] = true;
-          q.push(v);
-        }
-        if (--m == 0) break;  // если добавили все ребра, выходим из цикла
-      }
-    }
-  }
-  return adjMatrix;
-}
-
-vector<vector<int>> removeIsolatedVertices(
-    vector<vector<int>> adjacencyMatrix) {
-  vector<int> isolatedVertices;
-  int n = adjacencyMatrix.size();
-
-  // Поиск изолированных вершин
-  for (int i = 0; i < n; i++) {
-    bool hasNeighbors = false;
-    for (int j = 0; j < n; j++) {
-      if (adjacencyMatrix[i][j] == 1) {
-        hasNeighbors = true;
-        break;
-      }
-    }
-
-    if (!hasNeighbors) {
-      isolatedVertices.push_back(i);
-    }
-  }
-
-  // Удаление изолированных вершин
-  for (int i = isolatedVertices.size() - 1; i >= 0; i--) {
-    adjacencyMatrix.erase(adjacencyMatrix.begin() + isolatedVertices[i]);
-    for (int j = 0; j < adjacencyMatrix.size(); j++) {
-      adjacencyMatrix[j].erase(adjacencyMatrix[j].begin() +
-                               isolatedVertices[i]);
-    }
-  }
-
-  return adjacencyMatrix;
-}
-
-int countEdges(vvi adjMatrix) {
-  int res = 0;
-
-  for (int i = 0; i < adjMatrix.size(); i++) {
-    for (int j = i; j < adjMatrix.size(); j++) {
-      if (adjMatrix[i][j] == 1) {
-        res++;
-      }
-    }
-  }
-
-  return res;
-}
-
 vector<int> getVerticesAtDistanceKOrLess(vector<vector<int>> adjacencyMatrix,
                                          int startVertex, int k) {
   int n = adjacencyMatrix.size();
@@ -124,43 +53,6 @@ vector<int> getVerticesAtDistanceKOrLess(vector<vector<int>> adjacencyMatrix,
   return verticesAtDistanceK;
 }
 
-void generateGraphvizFile(vector<vector<int>> adjacencyMatrix, string graphName,
-                          vector<int> domSet) {
-  int n = adjacencyMatrix.size();
-
-  ofstream ofile;
-  ofile.open(graphName + ".gv");
-
-  // Заголовок графа
-  ofile << "graph " << graphName << " {\n";
-
-  // Вывод вершин
-  for (int i = 0; i < n; i++) {
-    ofile << "\t" << i+1 << ";\n";
-  }
-
-  // Вывод ребер
-  for (int i = 0; i < n; i++) {
-    for (int j = i; j < n; j++) {
-      if (adjacencyMatrix[i][j] == 1) {
-        ofile << "\t" << i+1 << " -- " << j+1 << ";\n";
-      }
-    }
-  }
-
-  for (int vertex : domSet) {
-    ofile << "    " << vertex+1 << " [style=filled, fillcolor=red];" << std::endl;
-  }
-
-  // Закрытие файла
-  ofile << "}\n";
-  ofile.close();
-
-  // Команды для генерации изображения графа
-  system(("fdp -Tpng " + graphName + ".gv -o " + graphName + ".png").c_str());
-  //system((graphName + ".png").c_str());
-}
-
 vector<int> sortVerticesByDegree(const vector<vector<int>>& adjacencyMatrix) {
   std::vector<int> vertices;
   for (int i = 0; i < adjacencyMatrix.size(); ++i) {
@@ -180,223 +72,6 @@ vector<int> sortVerticesByDegree(const vector<vector<int>>& adjacencyMatrix) {
   });
 
   return vertices;
-}
-
-vector<int> sortVerticesByKNeighbors(const vvi& adjMatrix, vector<int> domSet,
-                                     int k) {
-  vector<int> vertices;
-  for (int i = 0; i < domSet.size(); ++i) {
-    vertices.push_back(domSet[i]);
-  }
-
-  for (int i = 0; i < vertices.size(); i++) {
-    cout << vertices[i] << " ";
-  }
-  cout << endl;
-
-  sort(vertices.begin(), vertices.end(),
-       [&adjMatrix, &domSet, &k, &vertices](int a, int b) {
-         vector<int> neighborsA = getVerticesAtDistanceKOrLess(adjMatrix, a, k);
-         cout << "neighbors" << a << ": ";
-         for (int j = 0; j < neighborsA.size(); j++) {
-           cout << neighborsA[j] << " ";
-         }
-         cout << endl;
-         vector<int> neighborsB = getVerticesAtDistanceKOrLess(adjMatrix, b, k);
-         cout << "neighbors" << b << ": ";
-         for (int j = 0; j < neighborsB.size(); j++) {
-           cout << neighborsB[j] << " ";
-         }
-         cout << endl;
-
-         return neighborsA.size() < neighborsB.size();
-       });
-
-  for (int i = 0; i < vertices.size(); i++) {
-    cout << vertices[i] << " ";
-  }
-  cout << endl;
-
-  return vertices;
-}
-
-vector<int> HEU1(vvi adjMatrix, int n, int k) {
-  vector<int> domSet;
-  vector<int> sortedVertices = sortVerticesByDegree(adjMatrix);
-
-  for (int i = 0; i < sortedVertices.size(); i++) {
-    cout << sortedVertices[i] << " ";
-  }
-  cout << endl;
-
-  vector<bool> isCovered(n, false);
-
-  for (int i = 0; i < sortedVertices.size(); i++) {
-    if (!isCovered[sortedVertices[i]]) {
-      domSet.push_back(sortedVertices[i]);
-      isCovered[sortedVertices[i]] = true;
-      vector<int> currentNeighbors =
-          getVerticesAtDistanceKOrLess(adjMatrix, sortedVertices[i], k);
-      for (int j = 0; j < currentNeighbors.size(); j++) {
-        isCovered[currentNeighbors[j]] = true;
-      }
-    }
-  }
-
-  cout << k << "-dominating set by heuristic 1: ";
-  for (int i = 0; i < domSet.size(); i++) {
-    if (i > 0) cout << ", ";
-    cout << domSet[i];
-  }
-  cout << endl;
-
-  return domSet;
-}
-
-vector<int> HEU2(vvi adjMatrix, int n, int k, int alpha, double loopTime) {
-  vector<int> domSet;
-  vector<int> sortedVertices = sortVerticesByDegree(adjMatrix);
-
-  for (int i = 0; i < sortedVertices.size(); i++) {
-    cout << sortedVertices[i] << " ";
-  }
-  cout << endl;
-
-  vector<bool> isCovered(n, false);
-  double workTime = 0;
-
-  for (int i = 0; i < sortedVertices.size(); i++) {
-    double start = clock() / 1000.0;
-
-    if (workTime >= loopTime ||
-        find(isCovered.begin(), isCovered.end(), false) == isCovered.end()) {
-      break;
-    }
-
-    vector<int> kNeighbors =
-        getVerticesAtDistanceKOrLess(adjMatrix, sortedVertices[i], k);
-    vector<int> notDominatedNeighbors;
-
-    for (int k = 0; k < kNeighbors.size(); k++) {
-      if (!isCovered[kNeighbors[k]]) {
-        notDominatedNeighbors.push_back(kNeighbors[k]);
-      }
-    }
-
-    if (!isCovered[sortedVertices[i]] ||
-        notDominatedNeighbors.size() >= alpha) {
-      domSet.push_back(sortedVertices[i]);
-      isCovered[sortedVertices[i]] = true;
-      for (int j = 0; j < kNeighbors.size(); j++) {
-        isCovered[kNeighbors[j]] = true;
-      }
-    }
-    double finish = clock() / 1000.0;
-    workTime = finish - start;
-    cout << workTime << endl;
-  }
-
-  for (int i = 0; i < sortedVertices.size(); i++) {
-    if (!isCovered[sortedVertices[i]]) {
-      cout << "HEU1 WORKING" << endl;
-      domSet.push_back(sortedVertices[i]);
-      isCovered[sortedVertices[i]] = true;
-      vector<int> currentNeighbors =
-          getVerticesAtDistanceKOrLess(adjMatrix, sortedVertices[i], k);
-      for (int j = 0; j < currentNeighbors.size(); j++) {
-        isCovered[currentNeighbors[j]] = true;
-      }
-    }
-  }
-
-  cout << k << "-dominating set by heuristic 2: ";
-  for (int i = 0; i < domSet.size(); i++) {
-    if (i > 0) cout << ", ";
-    cout << domSet[i];
-  }
-  cout << endl;
-
-  return domSet;
-}
-
-vector<int> redundantRemoval(vvi adjMatrix, vector<int> domSet, int k) {
-  vector<int> reducedDomSet = domSet;
-
-  vector<int> sortedVertices = sortVerticesByKNeighbors(adjMatrix, domSet, k);
-  for (int i = 0; i < sortedVertices.size(); i++) {
-    cout << sortedVertices[i] << " ";
-  }
-  cout << endl;
-
-  int k1 = floor((k + 1) / 2);
-  int k2 = k - k1;
-
-  for (int i = 0; i < sortedVertices.size(); i++) {
-    bool S = true;
-    vector<int> kNeighbors =
-        getVerticesAtDistanceKOrLess(adjMatrix, sortedVertices[i], k);
-    for (int j = 0; j < kNeighbors.size(); j++) {
-      bool T = false;
-      vector<int> uKNeighbors =
-          getVerticesAtDistanceKOrLess(adjMatrix, kNeighbors[j], k1);
-      for (int k = 0; k < sortedVertices.size(); k++) {
-        if (sortedVertices[k] != sortedVertices[i]) {
-          vector<int> wKNeighbors =
-              getVerticesAtDistanceKOrLess(adjMatrix, sortedVertices[k], k2);
-          if (hasDuplicate(uKNeighbors, wKNeighbors)) {
-            T = true;
-            break;
-          }
-        }
-      }
-      if (!T) {
-        S = false;
-        break;
-      }
-    }
-    if (S) {
-      remove(reducedDomSet.begin(), reducedDomSet.end(), sortedVertices[i]);
-    }
-  }
-
-  cout << "Reduced Dom Set: " << endl;
-  for (int i = 0; i < reducedDomSet.size(); i++) {
-    cout << reducedDomSet[i] << " ";
-  }
-  cout << endl;
-
-  return reducedDomSet;
-}
-
-vector<vector<int>> BA_graph(int n, int m) {
-  vector<vector<int>> graph(n, vector<int>(n));
-  for (int i = 0; i < m; i++) {
-    for (int j = i + 1; j < m; j++) {
-      graph[i][j] = 1;
-      graph[j][i] = 1;
-    }
-  }
-  for (int i = m; i < n; i++) {
-    int degree_sum = 0;
-    vector<int> degree_list(i, 0);
-    for (int j = 0; j < i; j++) {
-      for (int k = 0; k < i; k++) {
-        degree_sum += graph[j][k];
-        degree_list[k] = degree_sum;
-      }
-      int rand_degree = rand() % degree_sum;
-      int target_node = i;
-      for (int k = 0; k < i; k++) {
-        if (rand_degree < degree_list[k]) {
-          target_node = k;
-          break;
-        }
-      }
-      graph[i][target_node] = 1;
-      graph[target_node][i] = 1;
-    }
-  }
-  return graph;
 }
 
 pair<int, int> calculateGraphRadius(const std::vector<std::vector<int>>& adjacencyMatrix) {
@@ -455,408 +130,10 @@ pair<int, int> calculateGraphRadius(const std::vector<std::vector<int>>& adjacen
   return res;
 }
 
-vector<int> splitGraph(const std::vector<std::vector<int>>& adjacencyMatrix) {
-  int numVertices = adjacencyMatrix.size();
-  std::vector<int> partition(numVertices,
-                             0);  // Пометка вершин 0 и 1 для разбиения
-  std::vector<bool> visited(numVertices, false);  // Флаг посещения вершин
-
-  // Рекурсивная функция для пометки вершин и их разбиения
-  std::function<void(int, int)> dfs = [&](int vertex, int part) {
-    partition[vertex] = part;  // Устанавливаем разбиение для текущей вершины
-    visited[vertex] = true;  // Помечаем вершину как посещенную
-
-    // Перебираем соседей текущей вершины
-    for (int neighbor = 0; neighbor < numVertices; ++neighbor) {
-      if (adjacencyMatrix[vertex][neighbor] == 1 && !visited[neighbor]) {
-        dfs(neighbor, 1 - part);  // Рекурсивно вызываем для непосещенного
-                                  // соседа с другим разбиением
-      }
-    }
-  };
-
-  // Запускаем обход в глубину для каждой вершины
-  for (int vertex = 0; vertex < numVertices; ++vertex) {
-    if (!visited[vertex]) {
-      dfs(vertex,
-          0);  // Запускаем обход с разбиением 0 для первой непосещенной вершины
-    }
-  }
-
-  return partition;
-}
-
-void generatePartitionGraphvizFile(vector<vector<int>> adjacencyMatrix,
-                                   string graphName, vector<int> partition) {
-  int n = adjacencyMatrix.size();
-
-  ofstream ofile;
-  ofile.open(graphName + ".gv");
-
-  // Заголовок графа
-  ofile << "graph " << graphName << " {\n";
-
-  // Вывод вершин
-  for (int i = 0; i < n; i++) {
-    ofile << "\t" << i + 1 << ";\n";
-  }
-
-  // Вывод ребер
-  for (int i = 0; i < n; i++) {
-    for (int j = i; j < n; j++) {
-      if (adjacencyMatrix[i][j] == 1) {
-        ofile << "\t" << i + 1 << " -- " << j + 1 << ";\n";
-      }
-    }
-  }
-
-  /*for (int vertex : partition) {
-    ofile << "    " << vertex + 1 << " [style=filled, fillcolor=red];"
-          << std::endl;
-  }*/
-
-  for (int i = 0; i < partition.size(); i++) {
-    if (partition[i]) {
-      ofile << "    " << i + 1 << " [style=filled, fillcolor=red];" << endl;
-    } else {
-      ofile << "    " << i + 1 << " [style=filled, fillcolor=green];" << endl;
-    }
-  }
-
-  // Закрытие файла
-  ofile << "}\n";
-  ofile.close();
-
-  // Команды для генерации изображения графа
-  system(("fdp -Tpng " + graphName + ".gv -o " + graphName + ".png").c_str());
-  // system((graphName + ".png").c_str());
-}
-
-vector<int> splitGraphNew(const std::vector<std::vector<int>>& adjacencyMatrix) {
-  int numVertices = adjacencyMatrix.size();
-  std::vector<int> partition(numVertices,
-                             -1);  // Пометка вершин 0 и 1 для разбиения
-
-  std::queue<int> bfsQueue;
-  std::vector<bool> visited(numVertices, false);  // Флаг посещения вершин
-
-  int numPartitions = 2;
-  int targetSize = numVertices / numPartitions;
-  int currentSize = 0;
-  int currentPartition = 0;
-
-  // Начинаем обход в ширину для разбиения на две связные половины
-  for (int startVertex = 0; startVertex < numVertices; ++startVertex) {
-    if (visited[startVertex]) {
-      continue;
-    }
-
-    bfsQueue.push(startVertex);
-    visited[startVertex] = true;
-
-    while (!bfsQueue.empty()) {
-      int vertex = bfsQueue.front();
-      bfsQueue.pop();
-
-      partition[vertex] = currentPartition;
-      currentSize++;
-
-      if (currentSize >= targetSize) {
-        currentSize = 0;
-        currentPartition++;
-      }
-
-      for (int neighbor = 0; neighbor < numVertices; ++neighbor) {
-        if (adjacencyMatrix[vertex][neighbor] == 1 && !visited[neighbor]) {
-          bfsQueue.push(neighbor);
-          visited[neighbor] = true;
-        }
-      }
-    }
-  }
-
-  return partition;
-}
-
-vector<int> romanKDomSet(vvi adjMatrix, int k) {
-
-  vector<int> weights(adjMatrix.size(), 0);
-  vector<vvi> matrices;
-  vector<int> domSet;
-
-  matrices.push_back(adjMatrix);
-
-  while (!matrices.empty()) {
-    vector<vvi> currMatrices;
-    for (int i = 0; i < matrices.size(); i++) {
-      pair<int, int> currMid = calculateGraphRadius(matrices[i]);
-      int currRadius = currMid.first;
-      int currCenter = currMid.second;
-
-      if (currRadius <= k) {
-        weights[currCenter] = currRadius;
-        domSet.push_back(currCenter);
-      } else {
-        vector<int> partition;
-        graphCut(matrices[i], partition);
-        vvi currPart1 = buildAdjacencyMatrix(matrices[i], partition, 0);
-        vvi currPart2 = buildAdjacencyMatrix(matrices[i], partition, 1);
-        currMatrices.push_back(currPart1);
-        currMatrices.push_back(currPart2);
-      }
-    }
-    matrices = currMatrices;
-  }
-
-  return domSet;
-
-}
-
-std::vector<std::vector<int>> buildAdjacencyMatrix(
-    const std::vector<std::vector<int>>& adjacencyMatrix,
-    const std::vector<int>& partition, int part) {
-
-  int numVertices = adjacencyMatrix.size();
-  std::vector<std::vector<int>> subMatrix(numVertices,
-                                          std::vector<int>(numVertices, 0));
-
-  // Заполняем матрицу смежности для заданной половины графа
-  for (int i = 0; i < numVertices; ++i) {
-    if (partition[i] == part) {
-      for (int j = 0; j < numVertices; ++j) {
-        if (partition[j] == part) {
-          subMatrix[i][j] = adjacencyMatrix[i][j];
-        }
-      }
-    }
-  }
-
-  return subMatrix;
-
-}
-
-void multilevelGraphPartitioning(
-    const std::vector<std::vector<int>>& adjacencyMatrix,
-    std::vector<int>& partition) {
-  std::default_random_engine generator(time(0));
-  std::uniform_int_distribution<int> distribution(0, 1);
-  int numVertices = adjacencyMatrix.size();
-  partition.resize(numVertices);
-
-  // Инициализация случайными значениями
-  for (int i = 0; i < numVertices; ++i) {
-    partition[i] = distribution(generator);
-  }
-
-  // Многократное улучшение разбиения
-  bool improvement = true;
-  while (improvement) {
-    improvement = false;
-
-    // Вычисление баланса разбиения
-    int numPartitions = 2;
-    std::vector<int> partitionSize(numPartitions, 0);
-    for (int i = 0; i < numVertices; ++i) {
-      partitionSize[partition[i]]++;
-    }
-    int targetSize = numVertices / numPartitions;
-
-    // Поиск вершины для переключения между разбиениями
-    for (int i = 0; i < numVertices; ++i) {
-      int currentPartition = partition[i];
-
-      // Подсчет веса вершин в текущем разбиении
-      int currentWeight = 0;
-      for (int j = 0; j < numVertices; ++j) {
-        if (j != i && partition[j] == currentPartition) {
-          currentWeight += adjacencyMatrix[i][j];
-        }
-      }
-
-      // Подсчет веса вершин в соседнем разбиении
-      int neighborPartition = 1 - currentPartition;
-      int neighborWeight = 0;
-      for (int j = 0; j < numVertices; ++j) {
-        if (j != i && partition[j] == neighborPartition) {
-          neighborWeight += adjacencyMatrix[i][j];
-        }
-      }
-
-      // Если переключение улучшает баланс, выполнить переключение
-      if (currentWeight - adjacencyMatrix[i][i] > targetSize &&
-          neighborWeight + adjacencyMatrix[i][i] < targetSize) {
-        partition[i] = neighborPartition;
-        improvement = true;
-      }
-    }
-  }
-}
-
-int computeCutSize(const std::vector<std::vector<int>>& adjacencyMatrix,
-                   const std::vector<int>& partition) {
-  int cutSize = 0;
-  int numVertices = partition.size();
-
-  for (int i = 0; i < numVertices; ++i) {
-    for (int j = i + 1; j < numVertices; ++j) {
-      if (partition[i] != partition[j]) {
-        cutSize += adjacencyMatrix[i][j];
-      }
-    }
-  }
-
-  return cutSize;
-}
-
-void graphCut(const std::vector<std::vector<int>>& adjacencyMatrix,
-              std::vector<int>& partition) {
-  int numVertices = adjacencyMatrix.size();
-  partition.resize(numVertices, 0);
-
-  // Инициализация начального разбиения
-  for (int i = 0; i < numVertices; ++i) {
-    partition[i] = (i < numVertices / 2) ? 0 : 1;
-  }
-
-  int bestCutSize = computeCutSize(adjacencyMatrix, partition);
-
-  // Поиск лучшего разреза путем переключения вершин между разбиениями
-  for (int i = 0; i < numVertices; ++i) {
-    for (int j = i + 1; j < numVertices; ++j) {
-      if (partition[i] != partition[j]) {
-        // Переключение вершин i и j между разбиениями
-        partition[i] = 1 - partition[i];
-        partition[j] = 1 - partition[j];
-
-        // Вычисление суммы весов ребер после переключения
-        int cutSize = computeCutSize(adjacencyMatrix, partition);
-
-        // Если сумма весов ребер уменьшилась, обновить лучший разрез
-        if (cutSize < bestCutSize) {
-          bestCutSize = cutSize;
-        } else {
-          // В противном случае, отменить переключение вершин
-          partition[i] = 1 - partition[i];
-          partition[j] = 1 - partition[j];
-        }
-      }
-    }
-  }
-}
-
-vector<int> romanKDomSetHEU(vvi adjMatrix, int k) {
+vector<int> romanKDomSetHEU1(vvi adjMatrix, int k, vector<int>& weights) {
   vector<int> domSet;
   vector<int> sortedVertices = sortVerticesByDegree(adjMatrix);
-  vector<int> weights(adjMatrix.size(), 0);
-  int currentK = k;
-
-  vector<bool> isCovered(adjMatrix.size(), false);
-
-  std::cout << "sortedVertices: " << endl;
-  for (int i = 0; i < sortedVertices.size(); i++) {
-    std::cout << sortedVertices[i] << " ";
-  }
-  cout << endl;
-
-  pair<int, int> mid = calculateGraphRadius(adjMatrix);
-  int radius = mid.first;
-  int center = mid.second;
-
-  if (radius <= k) {
-    domSet.push_back(center);
-    weights[center] = radius;
-    isCovered[center] = true;
-    vector<int> neighbors =
-        getVerticesAtDistanceKOrLess(adjMatrix, center, radius);
-    for (int i = 0; i < neighbors.size(); i++) {
-      isCovered[neighbors[i]] = true;
-    }
-  } else {
-      for (int i = 0; i < sortedVertices.size(); i++) {
-        if (!isCovered[sortedVertices[i]]) {
-          domSet.push_back(sortedVertices[i]);
-          isCovered[sortedVertices[i]] = true;
-
-          vector<int> currentNeighbors = getVerticesAtDistanceKOrLess(
-              adjMatrix, sortedVertices[i], currentK);
-          int notDominated = 0;
-          for (int j = 0; j < currentNeighbors.size(); j++) {
-            if (!isCovered[currentNeighbors[j]]) {
-              notDominated++;
-            }
-          }
-
-          cout << "currentNeighbors: ";
-          for (int j = 0; j < currentNeighbors.size(); j++) {
-            cout << currentNeighbors[j] << " ";
-          }
-          cout << endl;
-
-          vector<int> currentNeighborsLess = getVerticesAtDistanceKOrLess(
-              adjMatrix, sortedVertices[i], currentK - 1);
-          int notDominatedLess = 0;
-          for (int j = 0; j < currentNeighborsLess.size(); j++) {
-            if (!isCovered[currentNeighborsLess[j]]) {
-              notDominatedLess++;
-            }
-          }
-          cout << "current vertex = " << sortedVertices[i] << endl;
-          cout << "notDominated = " << notDominated << endl;
-          cout << "notDominatedLess = " << notDominatedLess << endl;
-          cout << "currentK = " << currentK << endl;
-          cout << endl;
-
-          while (notDominated == notDominatedLess && notDominated != 0) {
-            cout << "while" << endl;
-            currentK--;
-            currentNeighbors = getVerticesAtDistanceKOrLess(
-                adjMatrix, sortedVertices[i], currentK);
-            notDominated = 0;
-            for (int j = 0; j < currentNeighbors.size(); j++) {
-              if (!isCovered[currentNeighbors[i]]) {
-                notDominated++;
-              }
-            }
-            currentNeighborsLess = getVerticesAtDistanceKOrLess(
-                adjMatrix, sortedVertices[i], currentK - 1);
-            notDominatedLess = 0;
-            for (int j = 0; j < currentNeighborsLess.size(); j++) {
-              if (!isCovered[currentNeighborsLess[i]]) {
-                notDominatedLess++;
-              }
-            }
-          }
-
-          weights[sortedVertices[i]] = currentK;
-          for (int j = 0; j < currentNeighbors.size(); j++) {
-            isCovered[currentNeighbors[j]] = true;
-          }
-          cout << endl;
-        }
-        currentK = k;
-      }
-    }
-
-    cout << k << "-dominating set by Roman " << k << "-dom heuristic : ";
-    for (int i = 0; i < domSet.size(); i++) {
-      if (i > 0) cout << ", ";
-      cout << domSet[i];
-    }
-    cout << endl;
-
-    cout << "weights: " << endl;
-    for (int i = 0; i < weights.size(); i++) {
-      cout << weights[i] << " ";
-    }
-    cout << endl;
-
-    return domSet;
-}
-
-vector<int> romanKDomSetHEU1(vvi adjMatrix, int k) {
-  vector<int> domSet;
-  vector<int> sortedVertices = sortVerticesByDegree(adjMatrix);
-  vector<int> weights(adjMatrix.size(), 0);
+  //vector<int> weights(adjMatrix.size(), 0);
   int currentK = k;
 
   for (int i = 0; i < sortedVertices.size(); i++) {
@@ -977,10 +254,10 @@ vector<int> romanKDomSetHEU1(vvi adjMatrix, int k) {
   return domSet;
 }
 
-vector<int> romanKDomSetHEU2(vvi adjMatrix, int k, int alpha, double loopTime) {
+vector<int> romanKDomSetHEU2(vvi adjMatrix, int k, vector<int>& weights, int alpha, double loopTime) {
   vector<int> domSet;
   vector<int> sortedVertices = sortVerticesByDegree(adjMatrix);
-  vector<int> weights(adjMatrix.size(), 0);
+  //vector<int> weights(adjMatrix.size(), 0);
   int currentK = k;
 
   for (int i = 0; i < sortedVertices.size(); i++) {
@@ -1025,6 +302,7 @@ vector<int> romanKDomSetHEU2(vvi adjMatrix, int k, int alpha, double loopTime) {
           notDominatedNeighbors.size() >= alpha) {
         domSet.push_back(sortedVertices[i]);
         isCovered[sortedVertices[i]] = true;
+        weights[sortedVertices[i]] = k;
         for (int j = 0; j < kNeighbors.size(); j++) {
           isCovered[kNeighbors[j]] = true;
         }
@@ -1039,6 +317,7 @@ vector<int> romanKDomSetHEU2(vvi adjMatrix, int k, int alpha, double loopTime) {
         cout << "HEU1 WORKING" << endl;
         domSet.push_back(sortedVertices[i]);
         isCovered[sortedVertices[i]] = true;
+        weights[sortedVertices[i]] = k;
         vector<int> currentNeighbors =
             getVerticesAtDistanceKOrLess(adjMatrix, sortedVertices[i], k);
         for (int j = 0; j < currentNeighbors.size(); j++) {
@@ -1048,7 +327,65 @@ vector<int> romanKDomSetHEU2(vvi adjMatrix, int k, int alpha, double loopTime) {
     }
   }
 
-  
+  for (int i = 0; i < domSet.size(); i++) {
+    vector<int> neighbors =
+        getVerticesAtDistanceKOrLess(adjMatrix, domSet[i], currentK);
+    cout << "neighbors: ";
+    for (int j = 0; j < neighbors.size(); j++) {
+      cout << neighbors[j] << " ";
+    }
+    cout << endl;
+    int dominated = 0;
+    for (int j = 0; j < neighbors.size(); j++) {
+      cout << isCovered[neighbors[j]];
+      if (isCovered[neighbors[j]]) {
+        dominated++;
+      }
+    }
+    cout << endl;
+    vector<int> neighborsLess =
+        getVerticesAtDistanceKOrLess(adjMatrix, domSet[i], currentK - 1);
+    cout << "neighborsLess: ";
+    for (int j = 0; j < neighborsLess.size(); j++) {
+      cout << neighborsLess[j] << " ";
+    }
+    cout << endl;
+    int dominatedLess = 0;
+    for (int j = 0; j < neighborsLess.size(); j++) {
+      cout << isCovered[neighborsLess[j]];
+      if (isCovered[neighborsLess[j]]) {
+        dominatedLess++;
+      }
+    }
+    cout << endl;
+
+    cout << "vertex " << domSet[i] << endl;
+    cout << "dominated = " << dominated << endl;
+    cout << "dominatedLess = " << dominatedLess << endl;
+    cout << "currentK = " << currentK << endl;
+
+    while (dominated == dominatedLess && dominated != 0) {
+      currentK--;
+      neighbors = getVerticesAtDistanceKOrLess(adjMatrix, domSet[i], currentK);
+      dominated = 0;
+      for (int j = 0; j < neighbors.size(); j++) {
+        if (isCovered[neighbors[j]]) {
+          dominated++;
+        }
+      }
+      neighborsLess =
+          getVerticesAtDistanceKOrLess(adjMatrix, domSet[i], currentK - 1);
+      dominatedLess = 0;
+      for (int j = 0; j < neighborsLess.size(); j++) {
+        if (isCovered[neighborsLess[j]]) {
+          dominatedLess++;
+        }
+      }
+
+      weights[domSet[i]] = currentK;
+    }
+    currentK = k;
+  }
 
   cout << k << "-dominating set by roman heuristic 2: ";
   for (int i = 0; i < domSet.size(); i++) {
@@ -1060,4 +397,46 @@ vector<int> romanKDomSetHEU2(vvi adjMatrix, int k, int alpha, double loopTime) {
   return domSet;
 }
 
+void generateWeightsGraphvizFile(vector<vector<int>> adjacencyMatrix,
+                                 string graphName, vector<int> domSet,
+                                 vector<int>& weights) {
+  int n = adjacencyMatrix.size();
 
+  ofstream ofile;
+  ofile.open(graphName + ".gv");
+
+  // Заголовок графа
+  ofile << "graph " << graphName << " {\n";
+
+  // Вывод вершин
+  for (int i = 0; i < n; i++) {
+    ofile << "\t" << i + 1 << ";\n";
+  }
+
+  // Вывод ребер
+  for (int i = 0; i < n; i++) {
+    for (int j = i; j < n; j++) {
+      if (adjacencyMatrix[i][j] == 1) {
+        ofile << "\t" << i + 1 << " -- " << j + 1 << ";\n";
+      }
+    }
+  }
+
+  for (int i = 0; i < n; i++) {
+    ofile << "\t" << i + 1 << " [label=\"" << i + 1 << " (" << weights[i] << ")\"]"
+          << ";\n";
+  }
+
+  for (int vertex : domSet) {
+    ofile << "    " << vertex + 1 << " [style=filled, fillcolor=red];"
+          << std::endl;
+  }
+
+  // Закрытие файла
+  ofile << "}\n";
+  ofile.close();
+
+  // Команды для генерации изображения графа
+  system(("fdp -Tpng " + graphName + ".gv -o " + graphName + ".png").c_str());
+  // system((graphName + ".png").c_str());
+}

@@ -1,15 +1,10 @@
 ﻿  MyForm.cpp
-C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\GraphDomApp\MyForm.h(319,1): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\GraphDomApp\MyForm.cpp(4,52): warning C4829: Возможно, неправильные параметры функции main. Рекомендуемый вариант - "int main(Platform::Array<Platform::String^>^ argv)"
+C:\Users\LocalAdm\Desktop\vkr\GraphDomApp\GraphDomApp\MyForm.cpp(4,52): warning C4829: Возможно, неправильные параметры функции main. Рекомендуемый вариант - "int main(Platform::Array<Platform::String^>^ argv)"
   utils.cpp
-C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\GraphDomApp\utils.cpp(20,13): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\GraphDomApp\utils.cpp(47,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\GraphDomApp\utils.cpp(65,3): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\GraphDomApp\utils.cpp(92,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\GraphDomApp\utils.cpp(128,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\GraphDomApp\utils.cpp(330,10): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
-C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\GraphDomApp\utils.cpp(357,7): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
-C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\GraphDomApp\utils.cpp(402,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\GraphDomApp\GraphDomApp\utils.cpp(22,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\GraphDomApp\GraphDomApp\utils.cpp(78,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\LocalAdm\Desktop\vkr\GraphDomApp\GraphDomApp\utils.cpp(403,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+  .NETFramework,Version=v4.7.1.AssemblyAttributes.cpp
   Создание кода...
   MyForm.obj : обнаружен модуль MSIL; для MSIL последовательная компоновка отключена; выполняется полная компоновка
-  GraphDomApp.vcxproj -> C:\Users\TEMYCH\Desktop\vkr\GraphDomApp\x64\Release\GraphDomApp.exe
+  GraphDomApp.vcxproj -> C:\Users\LocalAdm\Desktop\vkr\GraphDomApp\x64\Release\GraphDomApp.exe
