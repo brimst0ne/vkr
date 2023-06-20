@@ -1,10 +1,6 @@
-﻿  MyForm.cpp
-C:\Users\LocalAdm\Desktop\vkr\GraphDomApp\GraphDomApp\MyForm.cpp(4,52): warning C4829: Возможно, неправильные параметры функции main. Рекомендуемый вариант - "int main(Platform::Array<Platform::String^>^ argv)"
-  utils.cpp
+﻿  utils.cpp
 C:\Users\LocalAdm\Desktop\vkr\GraphDomApp\GraphDomApp\utils.cpp(22,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
 C:\Users\LocalAdm\Desktop\vkr\GraphDomApp\GraphDomApp\utils.cpp(78,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
 C:\Users\LocalAdm\Desktop\vkr\GraphDomApp\GraphDomApp\utils.cpp(403,33): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-  .NETFramework,Version=v4.7.1.AssemblyAttributes.cpp
-  Создание кода...
   MyForm.obj : обнаружен модуль MSIL; для MSIL последовательная компоновка отключена; выполняется полная компоновка
   GraphDomApp.vcxproj -> C:\Users\LocalAdm\Desktop\vkr\GraphDomApp\x64\Release\GraphDomApp.exe

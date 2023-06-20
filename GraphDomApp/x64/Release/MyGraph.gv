@@ -1,0 +1,12 @@
+graph MyGraph {
+	1;
+	2;
+	3;
+	1 -- 2;
+	1 -- 3;
+	2 -- 3;
+	1 [label="1 (2)"];
+	2 [label="2 (1)"];
+	3 [label="3 (1)"];
+    1 [style=filled, fillcolor=red];
+}
